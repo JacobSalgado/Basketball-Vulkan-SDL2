@@ -68,6 +68,40 @@ int main(int argc,char *argv[])
                 //2D draws
                 gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
                 gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));
+                /*gf2d_font_draw_line_tag(
+                    "NORMAL FONT TEST",
+                    FT_Normal,
+                    GFC_COLOR_WHITE,
+                    gfc_vector2d(10,10)
+                );*/
+
+                /*gf2d_font_draw_line_tag(
+                    "ALT+F4 to exit",
+                    FT_H1,
+                    GFC_COLOR_WHITE,
+                    gfc_vector2d(10,10)
+                );*/
+
+                /*gf2d_font_draw_line_tag(
+                    "H1 FONT TEST",
+                    FT_H1,
+                    GFC_COLOR_WHITE,
+                    gfc_vector2d(10,90)
+                );
+
+                gf2d_font_draw_line_tag(
+                    "H2 FONT TEST",
+                    FT_H2,
+                    GFC_COLOR_WHITE,
+                    gfc_vector2d(10,140)
+                );
+
+                gf2d_font_draw_line_tag(
+                    "H6 FONT TEST",
+                    FT_H6,
+                    GFC_COLOR_WHITE,
+                    gfc_vector2d(10,190)
+                );*/
                 gf2d_mouse_draw();
         gf3d_vgraphics_render_end();
         if (gfc_input_command_down("exit"))_done = 1; // exit condition

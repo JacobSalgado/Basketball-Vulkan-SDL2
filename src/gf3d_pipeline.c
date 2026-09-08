@@ -93,7 +93,7 @@ void gf3d_pipeline_update_descriptor_set(Pipeline *pipe, PipelineDrawCall *drawC
     frame = gf3d_vgraphics_get_current_buffer_frame();
     buffer = gf3d_uniform_buffer_list_get_nth_buffer(pipe->uboBigBuffer, 0, frame);
     bufferInfo.buffer = buffer->uniformBuffer;
-    bufferInfo.offset = drawCall->index * pipe->uboDataSize;
+    bufferInfo.offset = drawCall->index * pipe->uboStride;
     bufferInfo.range = pipe->uboDataSize;
 
     descriptorWrite[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -169,7 +169,8 @@ PipelineDrawCall *gf3d_pipeline_draw_call_new(Pipeline *pipe)
     i = pipe->drawCallCount;
     pipe->drawCallList[i].inuse = 1;
     //setup the data pointer to write to our cpu side ubo buffer
-    ptr = ptr + (i * pipe->uboDataSize);
+    //ptr = ptr + (i * pipe->uboDataSize);
+    ptr = ptr + (i * pipe->uboStride);
     pipe->drawCallList[i].uboData = ptr;
     pipe->drawCallList[i].index = i;
     pipe->drawCallCount++;
@@ -400,6 +401,10 @@ Pipeline *gf3d_pipeline_create_from_config(
     VkPipelineColorBlendAttachmentState colorBlendAttachment = {0};
     VkPipelineColorBlendStateCreateInfo colorBlending = {0};
     VkPipelineDepthStencilStateCreateInfo depthStencil = {0};
+    // need this in order to run on my NVIDIA 5070 GPU
+    VkPhysicalDeviceProperties deviceProperties;
+    VkDeviceSize alignment;
+    VkDeviceSize alignedBufferSize;
     
     if (!vertexInputDescription)
     {
@@ -578,15 +583,26 @@ Pipeline *gf3d_pipeline_create_from_config(
         gf3d_pipeline_free(pipe);
         return NULL;
     }
+    // to adapt with NVIDIA 5070 GPU
+    vkGetPhysicalDeviceProperties(gf3d_vgraphics_get_default_physical_device(), &deviceProperties);
+
+    alignment = deviceProperties.limits.minUniformBufferOffsetAlignment;
+
+    if (alignment == 0)
+        alignment = 1;
+    alignedBufferSize = ((bufferSize + alignment - 1) / alignment) * alignment;
+
     pipe->drawCallList = gfc_allocate_array(sizeof(PipelineDrawCall),descriptorCount);
     if (pipe->drawCallList)
     {
         pipe->drawCallListCount = descriptorCount;
     }
-    pipe->uboBufferSize = bufferSize * descriptorCount;
-    pipe->uboData = gfc_allocate_array(bufferSize,descriptorCount);
+    pipe->uboBufferSize = bufferSize;
+    pipe->uboStride = alignedBufferSize;
+    pipe->uboBufferSize = alignedBufferSize * descriptorCount;
+    pipe->uboData = gfc_allocate_array(alignedBufferSize,descriptorCount);
     pipe->uboDataSize = bufferSize;
-    pipe->uboBigBuffer = gf3d_uniform_buffer_list_new(device,bufferSize*descriptorCount,1,gf3d_swapchain_get_swap_image_count());
+    pipe->uboBigBuffer = gf3d_uniform_buffer_list_new(device,alignedBufferSize*descriptorCount,1,gf3d_swapchain_get_swap_image_count());
     gfc_line_cpy(pipe->name,configFile);
     pipe->indexType = indexType;
     if (__DEBUG)slog("pipeline created from file '%s'",configFile);

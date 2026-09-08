@@ -47,6 +47,7 @@ typedef struct
     char                   *uboData;                /**<pre-allocated cpu side UBO data*/
     size_t                  uboBufferSize;          /**<how large the whole buffer is*/
     size_t                  uboDataSize;            /**<size of a single UBO for this pipeline*/
+    size_t                  uboStride;              /**<aligned distance between UBOs>*/
     UniformBufferList      *uboBigBuffer;           /**<for batched draws.  This is the memory for ALL draws one per frame*/
     
     VkCommandBuffer         commandBuffer;          /**<for current command*/
