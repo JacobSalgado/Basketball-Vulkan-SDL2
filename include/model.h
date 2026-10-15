@@ -34,7 +34,7 @@ Model* model_new(void);
 /**
  * @brief render a model through a given pipeline
  */
-void model_queue_render(Model *model,void *uboData, GFC_Matrix4 mat, GFC_Color colorMod);
+void model_queue_render(Model *model, GFC_Matrix4 mat, GFC_Color colorMod);
 
 ModelUBO model_get_ubo(GFC_Matrix4 modelMat, GFC_Color colorMod);
 

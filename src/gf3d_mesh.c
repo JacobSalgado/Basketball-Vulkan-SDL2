@@ -24,11 +24,14 @@ typedef struct
 
 static MeshManager mesh_manager = {0};
 
+// forward declares
 void gf3d_mesh_close(void);
 void gf3d_mesh_primitive_free(MeshPrimitive* prim);
 void gf3d_mesh_delete(Mesh* mesh);
 
 MeshPrimitive* gf3d_mesh_primitive_new(void);
+
+int gf3d_mesh_primitive_buffer_create(MeshPrimitive *prim);
 
 void gf3d_mesh_init(Uint32 mesh_max)
 {
@@ -109,7 +112,7 @@ void gf3d_mesh_delete(Mesh* mesh)
     memset(mesh,0,sizeof(Mesh));
 }
 
-Mesh* mesh_get_by_filename(const char* filename)
+Mesh* gf3d_mesh_get_by_filename(const char* filename)
 {
     if (!filename) return NULL;
     int i;
@@ -132,11 +135,40 @@ Mesh *gf3d_mesh_load_obj(const char *filename)
     }
 
     Mesh* mesh = NULL;
-    mesh->_refCount++;
-    mesh = gf3d_mesh_new();
+    mesh = gf3d_mesh_get_by_filename(filename);
 
-    MeshPrimitive* prim = gf3d_mesh_primitive_new();
+    if (mesh)
+    {
+        mesh->_refCount++;
+        return mesh;
+    }
+    mesh = gf3d_mesh_new();
+    if (!mesh)
+    {
+        slog ("FAILED TO CREATE NEW MESH FROM FILE %s", filename);
+        return NULL;
+    }
+
+    MeshPrimitive* prim;
+    prim = gf3d_mesh_primitive_new();
+    if (!prim)
+    {
+        slog("FAIL TO GET MESH PRIM FROM %s", filename);
+        return NULL;
+    }
     prim->objData = gf3d_obj_load_from_file(filename);
+    if (!prim->objData)
+    {
+        slog("CANNOT OBTAIN OBJ DATA FROM FILE %s", filename);
+        gf3d_mesh_delete(mesh);
+        return NULL;
+    }
+    if (!gf3d_mesh_primitive_buffer_create(prim))
+    {
+        slog("Cannot create primitive buffer from file %s", filename);
+        gf3d_mesh_delete(mesh);
+        return NULL;
+    }
 
     gfc_list_append(mesh->primitives, prim);
     gfc_line_cpy(mesh->filename, filename);
@@ -254,11 +286,12 @@ void gf3d_mesh_queue_render(Mesh *mesh,Pipeline *pipe,void *uboData,Texture *tex
     int i, c;
     MeshPrimitive* prim;
     // iterate through the list of primitives
-    if ((!mesh) || (!mesh->primitives)) return;
+    if ((!mesh) || (!mesh->primitives) || (!uboData) || (!texture)) return;
     c = gfc_list_get_count(mesh->primitives);
     for (i = 0; i < c; i++)
     {
         prim = gfc_list_nth(mesh->primitives, i);
+        if (!prim) continue;
         gf3d_pipeline_queue_render(pipe, prim->vertexBuffer, prim->vertexCount, prim->faceBuffer,uboData, texture);
     }
 }

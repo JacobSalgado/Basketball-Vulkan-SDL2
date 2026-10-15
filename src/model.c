@@ -100,12 +100,12 @@ void model_close(void)
     memset(&model_manager, 0, sizeof(ModelManager));
 }
 
-void model_queue_render(Model *model,void *uboData, GFC_Matrix4 mat, GFC_Color colorMod)
+void model_queue_render(Model *model, GFC_Matrix4 mat, GFC_Color colorMod)
 {
     ModelUBO ubo;
     if (!model) return;
     ubo = model_get_ubo(mat, colorMod);
-    gf3d_mesh_queue_render(model->mesh, model_manager.pipe,&uboData, model->texture);
+    gf3d_mesh_queue_render(model->mesh, model_manager.pipe,&ubo, model->texture);
 }
 
 ModelUBO model_get_ubo(GFC_Matrix4 modelMat, GFC_Color colorMod)
@@ -126,26 +126,77 @@ Model *model_load(const char *filename)
     Mesh* mesh;
     Model* model;
     Texture* texture;
+
+    const char* str = NULL;
+    const char* str2 = NULL;
+
+    SJson *json;
+    SJson *data;
+
     if (!filename) return NULL;
+    model = model_get_by_filename(filename);
     if (model)
     {
-        model->_inuse++;
+        //model->_inuse++;
         model->_refCount++;
         return model;
+    }
+    json = sj_load(filename);
+    if (!json)
+    {
+        slog("CANNOT LOAD MODEL FILE %s", filename);
+        return NULL;
+    }
+    data = sj_object_get_value(json, "model");
+    if (!data)
+    {
+            slog("CANNOT GET MODEL DATA FROM FILE %s", filename);
+            sj_free(json);
+            return NULL;
+
+    }
+    str = sj_object_get_string(data, "obj");
+    if (!str)
+    {
+        slog ("CANNOT GET OBJ DATA FROM FILE %s", filename);
+        sj_free(json);
+        return NULL;
+    }
+    mesh = gf3d_mesh_load_obj(str);
+    if (!mesh)
+    {
+        slog("CANNOT LOAD MESH FROM OBJ DATA %s", filename);
+        sj_free(json);
+        return NULL;
+    }
+
+    str2 = sj_object_get_string(data, "texture");
+    if (str2)
+    {
+        texture = gf3d_texture_load(str2);
+        if (!texture)
+        {
+            slog("FAILED TO LOAD TEXTURE FROM FILE %s", filename);
+            texture = model_manager.defaultTexture;
+        }
     }
     model = model_new();
     if (!model)
     {
+        slog ("Can't get model for model %s", filename);
         return NULL;
     }
-    model->texture = gf3d_texture_load(filename);
+    /*model->texture = gf3d_texture_load(filename);
     if (!model->texture)
     {
         slog("model_load: failed to load texture for model. will use default texture");
         model_free(model);
         return NULL;
-    }
-    if (!model)
+    }*/
+    model->mesh = mesh;
+    model->texture = texture;
+    gfc_line_cpy(model->filename, filename);
+
     return model;
 }
 
