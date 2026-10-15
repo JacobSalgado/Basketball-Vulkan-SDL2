@@ -66,10 +66,6 @@ Mesh *gf3d_mesh_new(void)
     {
         if(mesh_manager.meshList[i]._refCount == 0)
         {
-            if (mesh_manager.meshList[i]._refCount > 0)
-            {
-                gf3d_mesh_delete(&mesh_manager.meshList[i]);
-            }
             mesh_manager.meshList[i].primitives = gfc_list_new();
             if (mesh_manager.meshList[i].primitives == NULL)
             {
@@ -181,21 +177,31 @@ Mesh *gf3d_mesh_load_obj(const char *filename)
 int gf3d_mesh_primitive_buffer_create(MeshPrimitive *prim)
 {
     void *data = NULL;
+
+
     VkDevice device = mesh_manager.device;
     size_t bufferSize;
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
 
+    if ((!prim) || (!prim->objData))
+    {
+        slog("buffer_create: NO PRIM OR OBJ DATA");
+        return 0;
+    }
+    slog("obj counts: faces %u, face verts %u", prim->objData->face_count, prim->objData->face_vert_count);
+
     // face buffers
-    bufferSize = sizeof(Face) * prim->faceCount;
+    bufferSize = sizeof(Face) * prim->objData->face_count;
+    prim->faceCount = prim->objData->face_count;
 
     gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &stagingBuffer, &stagingBufferMemory);
 
-    vkMapMemory(device, stagingBufferMemory, 0, prim->faceCount, 0, &data);
+    vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
     memcpy(data, prim->objData->outFace, (size_t) bufferSize);
     vkUnmapMemory(device, stagingBufferMemory);
 
-    gf3d_buffer_create(prim->faceCount, VK_BUFFER_USAGE_TRANSFER_DST_BIT|VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &prim->faceBuffer, &prim->faceBufferMemory);
+    gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT|VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &prim->faceBuffer, &prim->faceBufferMemory);
 
     gf3d_buffer_copy(stagingBuffer, prim->faceBuffer, bufferSize);
 
@@ -203,7 +209,8 @@ int gf3d_mesh_primitive_buffer_create(MeshPrimitive *prim)
     vkFreeMemory(device, stagingBufferMemory, NULL);
 
     // vertex buffers
-    bufferSize = sizeof(Vertex) * prim->vertexCount;
+    bufferSize = sizeof(Vertex) * prim->objData->face_vert_count;
+    prim->vertexCount = prim->objData->face_vert_count;
 
     gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &stagingBuffer, &stagingBufferMemory);
 
@@ -213,7 +220,7 @@ int gf3d_mesh_primitive_buffer_create(MeshPrimitive *prim)
 
     gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT|VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &prim->vertexBuffer, &prim->vertexBufferMemory);
 
-    gf3d_buffer_copy(stagingBuffer, prim->faceBuffer, bufferSize);
+    gf3d_buffer_copy(stagingBuffer, prim->vertexBuffer, bufferSize);
 
     vkDestroyBuffer(device, stagingBuffer, NULL);
     vkFreeMemory(device, stagingBufferMemory, NULL);
@@ -224,7 +231,23 @@ int gf3d_mesh_primitive_buffer_create(MeshPrimitive *prim)
 void gf3d_mesh_primitive_buffer_free(MeshPrimitive* prim)
 {
     if (!prim) return;
-    gf3d_mesh_primitive_buffer_free(prim);
+
+    if (prim->faceBuffer != VK_NULL_HANDLE)
+    {
+        vkDestroyBuffer(mesh_manager.device, prim->faceBuffer, NULL);
+    }
+    if (prim->faceBufferMemory != VK_NULL_HANDLE)
+    {
+        vkFreeMemory(mesh_manager.device, prim->faceBufferMemory, NULL);
+    }
+    if (prim->vertexBuffer != VK_NULL_HANDLE)
+    {
+        vkDestroyBuffer(mesh_manager.device,prim->vertexBuffer ,NULL );
+    }
+    if(prim->vertexBufferMemory != VK_NULL_HANDLE)
+    {
+        vkFreeMemory(mesh_manager.device,prim->vertexBufferMemory, NULL);
+    }
 
 }
 
@@ -259,11 +282,11 @@ VkVertexInputAttributeDescription * gf3d_mesh_get_attribute_descriptions(Uint32 
     mesh_manager.attributeDescriptions[1].binding = 0;
     mesh_manager.attributeDescriptions[1].location = 1;
     mesh_manager.attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-    mesh_manager.attributeDescriptions[1].offset = offsetof(Vertex, texel);
+    mesh_manager.attributeDescriptions[1].offset = offsetof(Vertex, normal);
 
     mesh_manager.attributeDescriptions[2].binding = 0;
     mesh_manager.attributeDescriptions[2].location = 2;
-    mesh_manager.attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+    mesh_manager.attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
     mesh_manager.attributeDescriptions[2].offset = offsetof(Vertex, texel);
     if (count)*count = MESH_ATTRIBUTE_COUNT;
     return mesh_manager.attributeDescriptions;

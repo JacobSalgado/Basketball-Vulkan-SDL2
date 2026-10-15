@@ -60,7 +60,7 @@ int main(int argc,char *argv[])
     gf2d_font_init("config/font.cfg");
     gf2d_actor_init(1000);
 
-    // model_init_system(1024);
+    model_init_system(1024);
     
     //game init
     srand(SDL_GetTicks());
@@ -70,6 +70,7 @@ int main(int argc,char *argv[])
     gfc_matrix4_identity(mat);
     view = gf3d_vgraphics_get_view_matrix();
     model = model_load("models/dino.model");
+    slog("aftert model_load: model %p", (void*) model);
 
     // main game loop    
     while(!_done)
@@ -121,6 +122,9 @@ int main(int argc,char *argv[])
                 );*/
                 gf2d_mouse_draw();
         gf3d_vgraphics_render_end();
+        /*static int frames = 0;
+        if (frames < 3) slog ("frame %i done", frames++);*/
+
         if (gfc_input_command_down("exit"))_done = 1; // exit condition
         game_frame_delay();
     }    

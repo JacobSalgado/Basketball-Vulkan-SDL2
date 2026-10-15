@@ -35,7 +35,7 @@ void model_init_system(Uint32 modelCount)
 
     model_manager.modelCount = modelCount;
 
-    gf3d_mesh_init(1024);
+    gf3d_mesh_init(modelCount);
 
     // pipeline call
 
@@ -48,8 +48,15 @@ void model_init_system(Uint32 modelCount)
         gf3d_mesh_get_attribute_descriptions(NULL),
         MESH_ATTRIBUTE_COUNT,
         sizeof(ModelUBO),
-        VK_INDEX_TYPE_UINT16
+        VK_INDEX_TYPE_UINT32
     );
+    if (!model_manager.pipe)
+    {
+        slog("FAILED TO CREATE PIPELINE FOR MODELS");
+        slog_sync();
+        model_close();
+        return;
+    }
 
     // TODO: insert skybox pipe
 
@@ -78,12 +85,9 @@ Model* model_new(void)
     {
         if(model_manager.modelList[i]._refCount == 0)
         {
-            if (model_manager.modelList[i]._refCount > 0)
-            {
-                model_delete(&model_manager.modelList[i]);
-                model_manager.modelList[i]._refCount = 1;
-                return &model_manager.modelList[i];
-            }
+            model_delete(&model_manager.modelList[i]);
+            model_manager.modelList[i]._refCount = 1;
+            return &model_manager.modelList[i];
         }
     }
     return NULL;
@@ -139,6 +143,7 @@ Model *model_load(const char *filename)
     {
         //model->_inuse++;
         model->_refCount++;
+        slog("model loaded: %s", filename);
         return model;
     }
     json = sj_load(filename);
@@ -197,6 +202,7 @@ Model *model_load(const char *filename)
     model->texture = texture;
     gfc_line_cpy(model->filename, filename);
 
+    slog("model loaded: %s", filename);
     return model;
 }
 
@@ -204,9 +210,9 @@ Model* model_get_by_filename(const char* filename)
 {
     if (!filename) return NULL;
     int i;
-    for (i = 0; i < model_manager.modelList; i++)
+    for (i = 0; i < model_manager.modelCount; i++)
     {
-        if(!model_manager.modelList[i]._inuse) continue;
+        if(!model_manager.modelList[i]._refCount) continue;
         if(gfc_line_cmp(model_manager.modelList[i].filename, filename) == 0)
         {
             return &model_manager.modelList[i];

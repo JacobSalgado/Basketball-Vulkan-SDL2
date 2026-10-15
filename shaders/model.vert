@@ -20,12 +20,12 @@ layout(location = 2) in vec2 inUV;
 
 layout(location = 0) out vec2 outUV;
 layout(location = 1) out vec4 outNormal;
-layout(location = 2) out float outColorMod;
+layout(location = 2) out vec4 outColorMod;
 
 void main()
 {
     outUV = inUV;
     outNormal = vec4(inNormal, 0);
     outColorMod = ubo.color;
-    gl_Position = ubo.model * ubo.view * ubo.proj * vec4(inPosition,0);
+    gl_Position = ubo.model * ubo.view * ubo.proj * vec4(inPosition,1.0);
 }
