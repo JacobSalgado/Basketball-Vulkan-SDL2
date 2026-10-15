@@ -72,7 +72,7 @@ void gf2d_sprite_delete(Sprite *sprite);
 static SpriteManager gf2d_sprite = {0};
 
 
-void gf2d_sprite_manager_close()
+void gf2d_sprite_manager_close(void)
 {
     int i;
     for (i = 0; i < gf2d_sprite.max_sprites;i++)
@@ -585,7 +585,7 @@ VkVertexInputAttributeDescription * gf2d_sprite_get_attribute_descriptions(Uint3
     return gf2d_sprite.attributeDescriptions;
 }
 
-Pipeline *gf2d_sprite_get_pipeline()
+Pipeline *gf2d_sprite_get_pipeline(void)
 {
     return gf2d_sprite.pipe;
 }

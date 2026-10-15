@@ -23,7 +23,7 @@ typedef struct
 
 static PipelineManager gf3d_pipeline = {0};
 
-void gf3d_pipeline_close();
+void gf3d_pipeline_close(void);
 void gf3d_pipeline_create_basic_descriptor_pool(Pipeline *pipe,VkDescriptorPoolSize *poolSize,int poolSizeCount);
 void gf3d_pipeline_create_basic_descriptor_pool_from_config(Pipeline *pipe,SJson *config);
 void gf3d_pipeline_create_basic_descriptor_set_layout_from_config(Pipeline *pipe,SJson *config);

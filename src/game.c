@@ -20,6 +20,9 @@
 #include "gf3d_pipeline.h"
 #include "gf3d_swapchain.h"
 
+#include "gf3d_mesh.h"
+#include "model.h"
+
 extern int __DEBUG;
 
 static int _done = 0;
@@ -39,6 +42,11 @@ int main(int argc,char *argv[])
 {
     //local variables
     Sprite *bg;
+
+    Model* model;
+    GFC_Matrix4 mat;
+    GFC_Matrix4 *view;
+
     //initializtion    
     parse_arguments(argc,argv);
     init_logger("gf3d.log",0);
@@ -57,6 +65,10 @@ int main(int argc,char *argv[])
     slog_sync();
     bg = gf2d_sprite_load_image("images/bg_flat.png");
     gf2d_mouse_load("actors/mouse.actor");
+    gfc_matrix4_identity(mat);
+    view = gf3d_vgraphics_get_view_matrix();
+    model = model_load("models/dino.model");
+
     // main game loop    
     while(!_done)
     {

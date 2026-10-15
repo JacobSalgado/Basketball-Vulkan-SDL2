@@ -1,0 +1,16 @@
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
+
+layout(location = 0) in vec2 inUV;
+layout(location = 1) in vec4 inNormal;
+layout(location = 2) in float inColorMod;
+
+layout(location = 0) out vec4 outColor;
+
+
+void main()
+{
+    vec4 texColor = texture(texSampler, inUV);
+    // put math for normals here
+    outColor = texColor * colorMod;
+}
