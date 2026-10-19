@@ -56,5 +56,5 @@ gf3d
 *.blend1
 
 # extra ignores
-src/.cache
+src/.cache/
 
