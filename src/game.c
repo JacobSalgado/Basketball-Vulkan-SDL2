@@ -65,7 +65,7 @@ int main(int argc,char *argv[])
     //game init
     srand(SDL_GetTicks());
     slog_sync();
-    bg = gf2d_sprite_load_image("images/bg_flat.png");
+    //bg = gf2d_sprite_load_image("images/bg_flat.png");
     gf2d_mouse_load("actors/mouse.actor");
     gfc_matrix4_identity(mat);
     view = gf3d_vgraphics_get_view_matrix();
@@ -79,12 +79,18 @@ int main(int argc,char *argv[])
         gf2d_mouse_update();
         gf2d_font_update();
         //camera updaes
+        gfc_matrix4_view(
+          *view,
+          gfc_vector3d(10, -20, 10),
+          gfc_vector3d(0,0,0),
+          gfc_vector3d(0,0,1)
+        );
         gf3d_vgraphics_render_start();
         // new 3D DRAWS
         model_queue_render(model, mat, GFC_COLOR_WHITE);
 
         //2D draws
-                gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
+                //gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
                 gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));
                 /*gf2d_font_draw_line_tag(
                     "NORMAL FONT TEST",

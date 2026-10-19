@@ -48,7 +48,7 @@ void model_init_system(Uint32 modelCount)
         gf3d_mesh_get_attribute_descriptions(NULL),
         MESH_ATTRIBUTE_COUNT,
         sizeof(ModelUBO),
-        VK_INDEX_TYPE_UINT32
+        VK_INDEX_TYPE_UINT16
     );
     if (!model_manager.pipe)
     {
@@ -58,15 +58,19 @@ void model_init_system(Uint32 modelCount)
         return;
     }
 
-    // TODO: insert skybox pipe
+    // TODO: insert skybox pipe here. Skybox goes first
 
     model_manager.defaultTexture = gf3d_texture_load("images/default.png");
+    slog ("sizeof(Face) = %zu", sizeof(Face));
+
     atexit(model_close);
 }
 
 void model_free(Model* model)
 {
     if (!model)return;
+    model->_refCount--;
+    if (model->_refCount <= 0) model_delete(model);
 }
 
 void model_delete(Model* model)
@@ -109,6 +113,19 @@ void model_queue_render(Model *model, GFC_Matrix4 mat, GFC_Color colorMod)
     ModelUBO ubo;
     if (!model) return;
     ubo = model_get_ubo(mat, colorMod);
+
+    static int logged = 0;
+    if (!logged)
+    {
+        int r;
+        slog("sizeof(ModelUBO) = %zu", sizeof(ModelUBO));;
+        for (r = 0; r < 4; r++)
+            slog("view %f %f %f %f | proj %f %f %f %f",
+                 ubo.view[r][0], ubo.view[r][1], ubo.view[r][2], ubo.view[r][3],
+                 ubo.proj[r][0], ubo.proj[r][1], ubo.proj[r][2], ubo.proj[r][3]);
+            logged = 1;
+    }
+
     gf3d_mesh_queue_render(model->mesh, model_manager.pipe,&ubo, model->texture);
 }
 
@@ -118,7 +135,11 @@ ModelUBO model_get_ubo(GFC_Matrix4 modelMat, GFC_Color colorMod)
     GFC_Matrix4 *view;
 
     gfc_matrix4_copy(ubo.model, modelMat);
+
     view = gf3d_vgraphics_get_view_matrix();
+    if (view)
+        gfc_matrix4_copy(ubo.view, *view);
+
     gf3d_vgraphics_get_projection_matrix(&ubo.proj);
     ubo.color = gfc_color_to_vector4f(colorMod);
 

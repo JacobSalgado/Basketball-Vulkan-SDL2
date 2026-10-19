@@ -82,8 +82,8 @@ Mesh *gf3d_mesh_new(void)
 void gf3d_mesh_free(Mesh *mesh)
 {
     if (!mesh) return;
-    mesh-> _inuse--;
-    if (mesh->_inuse <= 0) gf3d_mesh_delete(mesh);
+    mesh-> _refCount--;
+    if (mesh->_refCount <= 0) gf3d_mesh_delete(mesh);
 }
 
 void gf3d_mesh_delete(Mesh* mesh)
@@ -201,7 +201,7 @@ int gf3d_mesh_primitive_buffer_create(MeshPrimitive *prim)
     memcpy(data, prim->objData->outFace, (size_t) bufferSize);
     vkUnmapMemory(device, stagingBufferMemory);
 
-    gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT|VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &prim->faceBuffer, &prim->faceBufferMemory);
+    gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT|VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &prim->faceBuffer, &prim->faceBufferMemory);
 
     gf3d_buffer_copy(stagingBuffer, prim->faceBuffer, bufferSize);
 
