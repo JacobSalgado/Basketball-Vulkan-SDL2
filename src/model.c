@@ -113,19 +113,6 @@ void model_queue_render(Model *model, GFC_Matrix4 mat, GFC_Color colorMod)
     ModelUBO ubo;
     if (!model) return;
     ubo = model_get_ubo(mat, colorMod);
-
-    static int logged = 0;
-    if (!logged)
-    {
-        int r;
-        slog("sizeof(ModelUBO) = %zu", sizeof(ModelUBO));;
-        for (r = 0; r < 4; r++)
-            slog("view %f %f %f %f | proj %f %f %f %f",
-                 ubo.view[r][0], ubo.view[r][1], ubo.view[r][2], ubo.view[r][3],
-                 ubo.proj[r][0], ubo.proj[r][1], ubo.proj[r][2], ubo.proj[r][3]);
-            logged = 1;
-    }
-
     gf3d_mesh_queue_render(model->mesh, model_manager.pipe,&ubo, model->texture);
 }
 

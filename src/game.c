@@ -41,7 +41,7 @@ void exitGame()
 int main(int argc,char *argv[])
 {
     //local variables
-    Sprite *bg;
+    //Sprite *bg;
 
     Model* model;
     GFC_Matrix4 mat;
@@ -78,10 +78,10 @@ int main(int argc,char *argv[])
         gfc_input_update();
         gf2d_mouse_update();
         gf2d_font_update();
-        //camera updaes
+        //camera updates
         gfc_matrix4_view(
           *view,
-          gfc_vector3d(10, -20, 10),
+          gfc_vector3d(20, -5, 10),
           gfc_vector3d(0,0,0),
           gfc_vector3d(0,0,1)
         );

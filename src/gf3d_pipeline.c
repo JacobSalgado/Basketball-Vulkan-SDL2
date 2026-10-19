@@ -782,12 +782,6 @@ void gf3d_pipeline_submit_all_pipe_commands()
     for (i = 0; i < gf3d_pipeline.maxPipelines;i++)
     {
         if (!gf3d_pipeline.pipelineList[i].inUse)continue;
-        static int logged = 0;
-        if (logged < 3)
-        {
-            slog("pipe %s: %i draw calls", gf3d_pipeline.pipelineList[i].name, gf3d_pipeline.pipelineList[i].drawCallCount);
-            logged++;
-        }
         //Update UBOS
         gf3_pipeline_update_ubos(&gf3d_pipeline.pipelineList[i]);
         //Update Descriptor sets
