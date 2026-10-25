@@ -53,6 +53,10 @@ ModelUBO model_get_ubo(
     GFC_Color colorMod
     );
 
+/**
+ * @brief load the model from a given filename
+ * @param filename the model file to be loaded
+ */
 Model *model_load(const char *filename);
 
 Model* model_get_by_filename(const char* filename);

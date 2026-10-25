@@ -48,7 +48,7 @@ void entity_system_close()
 void entity_clear_all()
 {
     int i;
-    for (i = 0; _entityManager.entityMax; i++)
+    for (i = 0; i < _entityManager.entityMax; i++)
     {
         if (!_entityManager.entityList[i]._refCount) continue; // skip iteration of loop
         entity_free(&_entityManager.entityList[i]);

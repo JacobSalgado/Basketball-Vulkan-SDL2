@@ -25,6 +25,7 @@ Entity* player_new()
     self->model = model_load("models/dino.model");
     self->position = gfc_vector3d(0,0,0);
     self->rotation = gfc_vector3d(0,90,0);
+    self->velocity = gfc_vector3d(0,0,0);
 
     self->color = GFC_COLOR_WHITE;
 
@@ -53,11 +54,17 @@ void player_free(Entity* self)
 
 /*void player_input(Entity* self, SDL_Event* event)
 {
-    if (!self || event) return;
+    if (!self || !event) return;
 
     if (event->type == SDL_KEYDOWN && event->key.repeat == 0)
     {
-        case SDLK_UP:
-            self->position.x += moveSpeed; break;
+        // movement handling
+        switch (event->key.keysym.sym)
+        {
+            case SDLK_UP:
+                self->position.x += moveSpeed; break;
+            case SDLK_DOWN:
+                self->position.x += moveSpeed; break;
+        }
     }
 }*/

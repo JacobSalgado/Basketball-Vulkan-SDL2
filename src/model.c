@@ -70,6 +70,8 @@ void model_free(Model* model)
 {
     if (!model)return;
     model->_refCount--;
+    slog("model being freed: %s", model->filename);
+    slog("model refCount for %s is %i: ", model->filename, model->_refCount);
     if (model->_refCount <= 0) model_delete(model);
 }
 

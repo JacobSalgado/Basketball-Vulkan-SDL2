@@ -21,7 +21,7 @@ typedef struct Entity_S
     GFC_Vector3D    position;
     GFC_Vector3D    rotation;
     GFC_Vector3D    scale;
-    GFC_Vector2D    velocity;
+    GFC_Vector3D    velocity;
     GFC_Color       color;
 
     void (*think)(struct Entity_S* self); /*<function to call to make decisions*/
