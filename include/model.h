@@ -29,6 +29,18 @@ void model_free(Model* model);
 
 void model_delete(Model* model);
 
+/**
+ * @brief draw a sprite to the screen with NULLable options
+ * @param model the model to draw
+ * @param modelMat model's world transform (position, rotation, and scale)
+ * @param color color mod
+ */
+void model_draw(
+    Model           *model,
+    GFC_Matrix4     modelMat,
+    GFC_Color       color
+    );
+
 Model* model_new(void);
 
 /**
@@ -36,12 +48,17 @@ Model* model_new(void);
  */
 void model_queue_render(Model *model, GFC_Matrix4 mat, GFC_Color colorMod);
 
-ModelUBO model_get_ubo(GFC_Matrix4 modelMat, GFC_Color colorMod);
+ModelUBO model_get_ubo(
+    GFC_Matrix4 modelMat,
+    GFC_Color colorMod
+    );
 
 Model *model_load(const char *filename);
 
 Model* model_get_by_filename(const char* filename);
 
 Pipeline* model_get_pipeline(void);
+
+
 
 #endif

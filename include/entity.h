@@ -3,6 +3,9 @@
 
 #include <SDL.h>
 #include "gfc_types.h"
+#include "gfc_vector.h"
+
+#include "model.h"
 
 typedef enum
 {
@@ -15,10 +18,16 @@ typedef struct Entity_S
     EntityType      type;
     Uint8           _refCount;
     Model*          model;
-    GFC_Vector2D    position;
-    float           rotation
-    GFC_Vector2D    scale;
+    GFC_Vector3D    position;
+    GFC_Vector3D    rotation;
+    GFC_Vector3D    scale;
     GFC_Vector2D    velocity;
+    GFC_Color       color;
+
+    void (*think)(struct Entity_S* self); /*<function to call to make decisions*/
+    void (*update)(struct Entity_S* self); /*function to call to execute those decisions*/
+    void (*free) (struct Entity_S* self); /*clean upp any custom allocated data*/
+    void *data;								/* for ad hoc addition data for the entity */
 } Entity;
 
 /**
@@ -46,6 +55,12 @@ Entity* entity_new();
 void entity_free(Entity* self);
 
 /**
+ * @brief draws the entity to the screen
+ * @param self the entity to ddraw
+ */
+void entity_draw(Entity* self);
+
+/**
  * @brief run the think functions for all active entities
  */
 void entity_system_think();
@@ -54,6 +69,11 @@ void entity_system_think();
  * @brief run the update functions for all active entities
  */
 void entity_system_update();
+
+/**
+ * @brief loads in all active entities into the game
+ */
+void entity_system_load();
 
 
 

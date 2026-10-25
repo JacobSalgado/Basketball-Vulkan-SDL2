@@ -23,6 +23,9 @@
 #include "gf3d_mesh.h"
 #include "model.h"
 
+#include "entity.h"
+#include "player.h"
+
 extern int __DEBUG;
 
 static int _done = 0;
@@ -43,9 +46,12 @@ int main(int argc,char *argv[])
     //local variables
     //Sprite *bg;
 
-    Model* model;
-    GFC_Matrix4 mat;
-    GFC_Matrix4 *view;
+    //Model* model;
+    //GFC_Matrix4 mat;
+    //GFC_Matrix4 *view;
+
+    // entities
+    Entity* player;
 
     //initializtion    
     parse_arguments(argc,argv);
@@ -61,16 +67,19 @@ int main(int argc,char *argv[])
     gf2d_actor_init(1000);
 
     model_init_system(1024);
+    entity_system_init(1024);
     
     //game init
     srand(SDL_GetTicks());
     slog_sync();
     //bg = gf2d_sprite_load_image("images/bg_flat.png");
     gf2d_mouse_load("actors/mouse.actor");
-    gfc_matrix4_identity(mat);
-    view = gf3d_vgraphics_get_view_matrix();
-    model = model_load("models/dino.model");
-    slog("aftert model_load: model %p", (void*) model);
+    //gfc_matrix4_identity(mat);
+    //view = gf3d_vgraphics_get_view_matrix();
+    //model = model_load("models/dino.model");
+
+    player = player_new();
+    //slog("aftert model_load: model %p", (void*) model);
 
     // main game loop    
     while(!_done)
@@ -79,15 +88,11 @@ int main(int argc,char *argv[])
         gf2d_mouse_update();
         gf2d_font_update();
         //camera updates
-        gfc_matrix4_view(
-          *view,
-          gfc_vector3d(20, -5, 10),
-          gfc_vector3d(0,0,0),
-          gfc_vector3d(0,0,1)
-        );
+
         gf3d_vgraphics_render_start();
         // new 3D DRAWS
-        model_queue_render(model, mat, GFC_COLOR_WHITE);
+        //model_queue_render(model, mat, GFC_COLOR_WHITE);
+        entity_draw(player);
 
         //2D draws
                 //gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
@@ -136,6 +141,7 @@ int main(int argc,char *argv[])
     }    
     vkDeviceWaitIdle(gf3d_vgraphics_get_default_logical_device());    
     //cleanup
+    entity_clear_all();
     slog("gf3d program end");
     exit(0);
     slog_sync();

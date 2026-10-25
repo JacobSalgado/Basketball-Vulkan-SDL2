@@ -116,7 +116,10 @@ void model_queue_render(Model *model, GFC_Matrix4 mat, GFC_Color colorMod)
     gf3d_mesh_queue_render(model->mesh, model_manager.pipe,&ubo, model->texture);
 }
 
-ModelUBO model_get_ubo(GFC_Matrix4 modelMat, GFC_Color colorMod)
+ModelUBO model_get_ubo(
+    GFC_Matrix4 modelMat,
+    GFC_Color colorMod
+    )
 {
     ModelUBO ubo = {0};
     GFC_Matrix4 *view;
@@ -212,6 +215,18 @@ Model *model_load(const char *filename)
 
     slog("model loaded: %s", filename);
     return model;
+}
+
+void model_draw(
+    Model           *model,
+    GFC_Matrix4     modelMat,
+    GFC_Color       color
+    )
+{
+    ModelUBO ubo;
+    if (!model) return;
+    ubo = model_get_ubo(modelMat, color);
+    gf3d_mesh_queue_render(model->mesh, model_manager.pipe, &ubo, model->texture);
 }
 
 Model* model_get_by_filename(const char* filename)
