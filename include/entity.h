@@ -10,7 +10,8 @@
 typedef enum
 {
     ENTITY_TYPE_PLAYER,
-    ENTITY_TYPE_OPPONENT
+    ENTITY_TYPE_OPPONENT,
+    ENTITY_TYPE_BASKETBALL
 } EntityType;
 
 typedef struct Entity_S
@@ -59,6 +60,11 @@ void entity_free(Entity* self);
  * @param self the entity to ddraw
  */
 void entity_draw(Entity* self);
+
+/**
+ * @brief draws all the active entities to the screen
+ */
+//void entity_system_draw()
 
 /**
  * @brief run the think functions for all active entities

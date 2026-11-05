@@ -124,23 +124,23 @@ void entity_system_update()
 void entity_draw(Entity* self)
 {
     GFC_Matrix4 mat;
-    GFC_Matrix4 *view;
+    //GFC_Matrix4 *view;
 
     if (!self) return;
 
     gfc_matrix4_identity(mat);
-    view = gf3d_vgraphics_get_view_matrix();
+    //view = gf3d_vgraphics_get_view_matrix();
+
+    gfc_matrix4_from_vectors(
+        mat,
+        self->position,
+        self->rotation,
+        self->scale);
 
     if (self->model)
     {
         model_draw(self->model, mat, self->color);
     }
-    gfc_matrix4_view(
-        *view,
-        gfc_vector3d(10, -5, 10),
-        gfc_vector3d(0,0,0),
-        gfc_vector3d(0,0,1)
-    );
 }
 
 void entity_system_draw()

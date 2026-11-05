@@ -32,6 +32,6 @@ void player_free(Entity* self);
  * @param self the player
  * @param event the event pointer address
  */
-//void player_input(Entity* self, SDL_Event* event)
+//void player_input(Entity* self, SDL_Event* event);
 
 #endif

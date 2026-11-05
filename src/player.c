@@ -1,4 +1,4 @@
-#include <SDL_events.h>
+#include <SDL.h>
 
 #include "simple_logger.h"
 
@@ -8,7 +8,7 @@ void player_think(Entity* self);
 void player_update(Entity* self);
 void player_free(Entity* self);
 
-int moveSpeed = 5;
+float moveSpeed = 0.5;
 
 Entity* player_new()
 {
@@ -24,7 +24,7 @@ Entity* player_new()
     self->type = ENTITY_TYPE_PLAYER;
     self->model = model_load("models/dino.model");
     self->position = gfc_vector3d(0,0,0);
-    self->rotation = gfc_vector3d(0,90,0);
+    self->rotation = gfc_vector3d(0,0,0);
     self->velocity = gfc_vector3d(0,0,0);
 
     self->color = GFC_COLOR_WHITE;
@@ -40,11 +40,22 @@ Entity* player_new()
 void player_think(Entity* self)
 {
     if (!self) return;
+    unsigned char* keys = SDL_GetKeyboardState(NULL);
+
+    if (keys[SDL_SCANCODE_UP]) self->velocity.y -= moveSpeed;
+    if (keys[SDL_SCANCODE_DOWN]) self->velocity.y += moveSpeed;
+    if (keys[SDL_SCANCODE_LEFT]) self->velocity.x += moveSpeed;
+    if (keys[SDL_SCANCODE_RIGHT]) self->velocity.x -= moveSpeed;
 }
 
 void player_update(Entity* self)
 {
+    //slog("position %f %f", self->position.x, self->position.y);
     if (!self) return;
+
+    self->position.x += self->velocity.x;
+    self->position.y += self->velocity.y;
+    self->position.z += self->velocity.z;
 }
 
 void player_free(Entity* self)
@@ -52,7 +63,7 @@ void player_free(Entity* self)
     if (!self) return;
 }
 
-/*void player_input(Entity* self, SDL_Event* event)
+void player_input(Entity* self, SDL_Event* event)
 {
     if (!self || !event) return;
 
@@ -62,9 +73,10 @@ void player_free(Entity* self)
         switch (event->key.keysym.sym)
         {
             case SDLK_UP:
+                slog("POsition changing %f", self->position.x);
                 self->position.x += moveSpeed; break;
             case SDLK_DOWN:
                 self->position.x += moveSpeed; break;
         }
     }
-}*/
+}

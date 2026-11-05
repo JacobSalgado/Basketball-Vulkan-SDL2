@@ -48,7 +48,7 @@ int main(int argc,char *argv[])
 
     //Model* model;
     //GFC_Matrix4 mat;
-    //GFC_Matrix4 *view;
+    GFC_Matrix4 *view;
 
     // entities
     Entity* player;
@@ -75,23 +75,36 @@ int main(int argc,char *argv[])
     //bg = gf2d_sprite_load_image("images/bg_flat.png");
     gf2d_mouse_load("actors/mouse.actor");
     //gfc_matrix4_identity(mat);
-    //view = gf3d_vgraphics_get_view_matrix();
+    view = gf3d_vgraphics_get_view_matrix(); // <-- used for rendering the camera view
     //model = model_load("models/dino.model");
 
     player = player_new();
+    GFC_Vector3D player_pos = player->position;
     //slog("aftert model_load: model %p", (void*) model);
 
     // main game loop    
     while(!_done)
     {
+        //SDL_Event event;
+
         gfc_input_update();
         gf2d_mouse_update();
         gf2d_font_update();
-        //camera updates
 
+        entity_system_think();
+        entity_system_update();
+
+        //camera updates
+        gfc_matrix4_view(
+            *view,                                                             // out
+            gfc_vector3d(player_pos.x, player_pos.y +30, player_pos.z ),       // position
+            player_pos,                                                        // target
+            gfc_vector3d(0,1,1)                                                // up
+        );
         gf3d_vgraphics_render_start();
-        // new 3D DRAWS
+        // 3D DRAWS
         //model_queue_render(model, mat, GFC_COLOR_WHITE);
+        //entity_system_draw();
         entity_draw(player);
 
         //2D draws
