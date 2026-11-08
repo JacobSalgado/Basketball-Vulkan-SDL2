@@ -25,6 +25,7 @@
 
 #include "entity.h"
 #include "player.h"
+#include "basketball.h"
 
 extern int __DEBUG;
 
@@ -52,6 +53,7 @@ int main(int argc,char *argv[])
 
     // entities
     Entity* player;
+    Entity* basketball;
 
     //initializtion    
     parse_arguments(argc,argv);
@@ -79,6 +81,7 @@ int main(int argc,char *argv[])
     //model = model_load("models/dino.model");
 
     player = player_new();
+    basketball = basketball_new();
     GFC_Vector3D player_pos = player->position;
     //slog("aftert model_load: model %p", (void*) model);
 
@@ -99,13 +102,14 @@ int main(int argc,char *argv[])
             *view,                                                             // out
             gfc_vector3d(player_pos.x, player_pos.y +30, player_pos.z ),       // position
             player_pos,                                                        // target
-            gfc_vector3d(0,1,1)                                                // up
+            gfc_vector3d(0,0,1)                                                // up
         );
         gf3d_vgraphics_render_start();
         // 3D DRAWS
         //model_queue_render(model, mat, GFC_COLOR_WHITE);
         //entity_system_draw();
         entity_draw(player);
+        entity_draw(basketball);
 
         //2D draws
                 //gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));

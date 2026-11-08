@@ -1,6 +1,18 @@
 #ifndef __BASKETBALL_H__
 #define __BASKETBALL_H__
 
+typedef enum
+{
+    DRIBBLING,
+    AIR,
+    LOOSE
+} BasketballState;
+
+typedef enum {
+    HIGH,
+    LOW
+} DribblingState;
+
 #include "entity.h"
 
 /**
