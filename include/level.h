@@ -6,8 +6,8 @@
 
 typedef struct
 {
-    Model       *terrain;
-    GFC_Box     bounds;
+    Model*      courtModel;
+    GFC_Box     bounds;         // level bounds so player can't escape
     SJson*      entitiesJson;
     SJson*      _json;
 } Level;
@@ -23,5 +23,7 @@ Level* level_new();
 void level_free(Level* level);
 
 void level_draw(Level* level);
+
+void level_spawn_entities(Level* level);
 
 #endif

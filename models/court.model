@@ -1,0 +1,7 @@
+{
+    "model":
+    {
+        "obj":"models/court/court.obj",
+        "texture":"models/court/court.png"
+    }
+}

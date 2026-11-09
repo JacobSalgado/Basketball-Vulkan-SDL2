@@ -1,7 +1,0 @@
-{
-    "model":
-    {
-        "obj":"models/dino/dino.obj",
-        "texture":"models/basketball/basketball.png"
-    }
-}

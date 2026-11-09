@@ -8,7 +8,10 @@ void player_think(Entity* self);
 void player_update(Entity* self);
 void player_free(Entity* self);
 
-float moveSpeed = 0.5;
+static float moveSpeed = 1; // acceleration per frame
+static float maxSpeed = 1.0;   // top speed player can reach
+static float friction = 0.85;
+
 
 Entity* player_new()
 {
@@ -22,10 +25,11 @@ Entity* player_new()
     }
 
     self->type = ENTITY_TYPE_PLAYER;
-    self->model = model_load("models/dino.model");
-    self->position = gfc_vector3d(0,0,0);
-    self->rotation = gfc_vector3d(0,0,0);
+    self->model = model_load("models/player.model");
+    self->position = gfc_vector3d(0,0,7);
+    self->rotation = gfc_vector3d(0,90,0);
     self->velocity = gfc_vector3d(0,0,0);
+    self->scale = gfc_vector3d(2,2,2);
 
     self->color = GFC_COLOR_WHITE;
 
@@ -56,6 +60,9 @@ void player_update(Entity* self)
     self->position.x += self->velocity.x;
     self->position.y += self->velocity.y;
     self->position.z += self->velocity.z;
+
+    self->velocity.x *= friction;
+    self->velocity.y *= friction;
 }
 
 void player_free(Entity* self)

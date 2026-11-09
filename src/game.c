@@ -103,7 +103,7 @@ int main(int argc,char *argv[])
         //camera updates
         gfc_matrix4_view(
             *view,                                                                               // out
-            gfc_vector3d(player->position.x, player->position.y +30, player->position.z ),       // position
+            gfc_vector3d(player->position.x, player->position.y +40, player->position.z + 15),       // position
             player->position,                                                                          // target
             gfc_vector3d(0,0,1)                                                                  // up
         );

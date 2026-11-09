@@ -1,0 +1,7 @@
+{
+    "model":
+    {
+        "obj":"models/player/Player.obj",
+        "texture":"models/player/Basketball_player_texture.png"
+    }
+}
