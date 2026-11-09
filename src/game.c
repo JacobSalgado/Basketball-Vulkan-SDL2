@@ -83,8 +83,8 @@ int main(int argc,char *argv[])
     player = player_new();
     basketball = basketball_new();
 
-    basketball->position = gfc_vector3d(5, 0, 0);
-    basketball->scale = gfc_vector3d(3, 3, 3);
+    //basketball->position = gfc_vector3d(5, 0, 0);
+    //basketball->scale = gfc_vector3d(3, 3, 3);
 
     //slog("aftert model_load: model %p", (void*) model);
 

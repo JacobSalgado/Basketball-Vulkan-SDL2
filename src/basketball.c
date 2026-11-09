@@ -16,9 +16,10 @@ Entity* basketball_new()
     self->type = ENTITY_TYPE_BASKETBALL;
     self->model = model_load("models/basketball.model");
 
-    self->position = gfc_vector3d(0,0,0);
+    self->position = gfc_vector3d(12,0,0);
     self->rotation = gfc_vector3d(0,0,0);
     self->velocity = gfc_vector3d(0,0,0);
+    self->scale = gfc_vector3d(10,10,10);
 
     self->color = GFC_COLOR_WHITE;
 

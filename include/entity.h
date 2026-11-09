@@ -81,6 +81,11 @@ void entity_system_update();
  */
 void entity_system_load();
 
+/**
+ * @brief draws in all active entities into the game
+ */
+void entity_system_draw();
+
 
 
 #endif
