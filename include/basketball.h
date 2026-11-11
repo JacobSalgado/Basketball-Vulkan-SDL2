@@ -39,4 +39,8 @@ void basketball_update(Entity* self);
  */
 void basketball_free(Entity* self);
 
+void ball_attach(Entity* ball, Entity* player);
+
+void ball_detach(Entity* ball);
+
 #endif

@@ -26,6 +26,7 @@
 #include "entity.h"
 #include "player.h"
 #include "basketball.h"
+#include "backboard.h"
 
 extern int __DEBUG;
 
@@ -54,6 +55,7 @@ int main(int argc,char *argv[])
     // entities
     Entity* player;
     Entity* basketball;
+    Entity* backboard;
 
     //initializtion    
     parse_arguments(argc,argv);
@@ -82,6 +84,9 @@ int main(int argc,char *argv[])
 
     player = player_new();
     basketball = basketball_new();
+    backboard = backboard_new();
+
+    ball_attach(basketball, player);
 
     //basketball->position = gfc_vector3d(5, 0, 0);
     //basketball->scale = gfc_vector3d(3, 3, 3);
@@ -103,8 +108,8 @@ int main(int argc,char *argv[])
         //camera updates
         gfc_matrix4_view(
             *view,                                                                               // out
-            gfc_vector3d(player->position.x, player->position.y +40, player->position.z + 15),       // position
-            player->position,                                                                          // target
+            gfc_vector3d(player->localPosition.x, player->localPosition.y +100, player->localPosition.z + 15),       // position
+            player->localPosition,                                                                          // target
             gfc_vector3d(0,0,1)                                                                  // up
         );
         gf3d_vgraphics_render_start();

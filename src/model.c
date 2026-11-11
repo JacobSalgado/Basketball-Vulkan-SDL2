@@ -48,7 +48,7 @@ void model_init_system(Uint32 modelCount)
         gf3d_mesh_get_attribute_descriptions(NULL),
         MESH_ATTRIBUTE_COUNT,
         sizeof(ModelUBO),
-        VK_INDEX_TYPE_UINT16
+        VK_INDEX_TYPE_UINT32
     );
     if (!model_manager.pipe)
     {

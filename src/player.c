@@ -3,6 +3,7 @@
 #include "simple_logger.h"
 
 #include "player.h"
+#include "basketball.h"
 
 void player_think(Entity* self);
 void player_update(Entity* self);
@@ -26,10 +27,12 @@ Entity* player_new()
 
     self->type = ENTITY_TYPE_PLAYER;
     self->model = model_load("models/player.model");
-    self->position = gfc_vector3d(0,0,7);
-    self->rotation = gfc_vector3d(0,90,0);
+    self->parent = NULL;
+
+    self->localPosition = gfc_vector3d(0,0,7);
+    self->localRotation = gfc_vector3d(0,90,0);
     self->velocity = gfc_vector3d(0,0,0);
-    self->scale = gfc_vector3d(2,2,2);
+    self->localScale = gfc_vector3d(2.5,2.5,2.5);
 
     self->color = GFC_COLOR_WHITE;
 
@@ -57,9 +60,9 @@ void player_update(Entity* self)
     //slog("position %f %f", self->position.x, self->position.y);
     if (!self) return;
 
-    self->position.x += self->velocity.x;
-    self->position.y += self->velocity.y;
-    self->position.z += self->velocity.z;
+    self->localPosition.x += self->velocity.x;
+    self->localPosition.y += self->velocity.y;
+    self->localPosition.z += self->velocity.z;
 
     self->velocity.x *= friction;
     self->velocity.y *= friction;
@@ -80,10 +83,10 @@ void player_input(Entity* self, SDL_Event* event)
         switch (event->key.keysym.sym)
         {
             case SDLK_UP:
-                slog("POsition changing %f", self->position.x);
-                self->position.x += moveSpeed; break;
+                slog("POsition changing %f", self->localPosition.x);
+                self->localPosition.x += moveSpeed; break;
             case SDLK_DOWN:
-                self->position.x += moveSpeed; break;
+                self->localPosition.x += moveSpeed; break;
         }
     }
 }

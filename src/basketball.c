@@ -14,12 +14,13 @@ Entity* basketball_new()
     }
 
     self->type = ENTITY_TYPE_BASKETBALL;
-    self->model = model_load("models/court.model");
+    self->model = model_load("models/basketball.model");
+    self->parent = NULL;
 
-    self->position = gfc_vector3d(12,0,0);
-    self->rotation = gfc_vector3d(0,0,0);
+    self->localPosition = gfc_vector3d(12,-5,0);
+    self->localRotation = gfc_vector3d(0,0,0);
     self->velocity = gfc_vector3d(0,0,0);
-    self->scale = gfc_vector3d(10,10,10);
+    self->localScale = gfc_vector3d(10,10,10);
 
     self->color = GFC_COLOR_WHITE;
 
@@ -40,9 +41,34 @@ void basketball_think(Entity* self)
 void basketball_update(Entity* self)
 {
     if (!self) return;
+    if (self->parent != NULL)
+    {
+        gfc_vector3d_add(self->worldPosition, self->parent->localPosition, self->localPosition);
+    }
+    else
+    {
+        gfc_vector3d_add(self->localPosition, self->localPosition, self->velocity);
+        self->worldPosition = self->localPosition;
+    }
 }
 
 void basketball_free(Entity* self)
 {
     if (!self) return;
+}
+
+void ball_attach(Entity* ball, Entity* player)
+{
+    if (!ball || !player) return;
+
+    ball->parent = player;
+    ball->localPosition = gfc_vector3d(12, -5, 0);
+    slog("basketball attached to player!!");
+}
+
+void ball_detach(Entity* ball)
+{
+    if (!ball) return;
+    ball->localPosition = ball->worldPosition;
+    ball->parent = NULL;
 }

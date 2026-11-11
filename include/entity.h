@@ -7,6 +7,8 @@
 
 #include "model.h"
 
+typedef struct Entity_S Entity;
+
 typedef enum
 {
     ENTITY_TYPE_PLAYER,
@@ -19,9 +21,13 @@ typedef struct Entity_S
     EntityType      type;
     Uint8           _refCount;
     Model*          model;
-    GFC_Vector3D    position;
-    GFC_Vector3D    rotation;
-    GFC_Vector3D    scale;
+    Entity*         parent;         // note to self: be careful when freeing an entity cause a parent pointer might dangle
+    GFC_Vector3D    localPosition;
+    GFC_Vector3D    localRotation;
+    GFC_Vector3D    localScale;
+    GFC_Vector3D    worldPosition;
+    GFC_Vector3D    worldRotation;
+    GFC_Vector3D    worldScale;
     GFC_Vector3D    velocity;
     GFC_Color       color;
 

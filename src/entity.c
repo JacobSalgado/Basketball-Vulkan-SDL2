@@ -70,7 +70,7 @@ Entity* entity_new()
         if (_entityManager.entityList[i]._refCount) continue; // skip any active entity
         memset(&_entityManager.entityList[i], 0, sizeof(Entity));
         _entityManager.entityList[i]._refCount = 1;
-        _entityManager.entityList[i].scale = gfc_vector3d(1, 1, 1); // default scale
+        _entityManager.entityList[i].localScale = gfc_vector3d(1, 1, 1); // default scale
         // set default color
 
         return &_entityManager.entityList[i];
@@ -133,9 +133,9 @@ void entity_draw(Entity* self)
 
     gfc_matrix4_from_vectors(
         mat,
-        self->position,
-        self->rotation,
-        self->scale);
+        self->localPosition,
+        self->localRotation,
+        self->localScale);
 
     if (self->model)
     {

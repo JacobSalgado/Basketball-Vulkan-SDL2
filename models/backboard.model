@@ -1,0 +1,7 @@
+{
+    "model":
+    {
+        "obj":"models/backboard/backboard.obj",
+        "texture":"models/backboard/BerkPalet.png"
+    }
+}
