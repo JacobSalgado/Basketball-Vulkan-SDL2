@@ -66,6 +66,9 @@ void player_update(Entity* self)
 
     self->velocity.x *= friction;
     self->velocity.y *= friction;
+
+    slog("player worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
+    slog("player localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
 }
 
 void player_free(Entity* self)

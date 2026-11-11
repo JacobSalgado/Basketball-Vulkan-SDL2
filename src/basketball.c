@@ -41,15 +41,12 @@ void basketball_think(Entity* self)
 void basketball_update(Entity* self)
 {
     if (!self) return;
-    if (self->parent != NULL)
-    {
-        gfc_vector3d_add(self->worldPosition, self->parent->localPosition, self->localPosition);
-    }
-    else
+    if (!self->parent)
     {
         gfc_vector3d_add(self->localPosition, self->localPosition, self->velocity);
-        self->worldPosition = self->localPosition;
     }
+    slog("basketball worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
+    slog("basketball localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
 }
 
 void basketball_free(Entity* self)

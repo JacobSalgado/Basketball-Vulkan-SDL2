@@ -109,6 +109,19 @@ void entity_update(Entity* self)
     if (!self) return;
     // boilerplate update stuff goes here
     if (self->update) self->update(self);
+
+    if (self->parent)
+    {
+        gfc_vector3d_add(self->worldPosition, self->parent->worldPosition, self->localPosition);
+        gfc_vector3d_add(self->worldRotation, self->parent->worldPosition, self->localRotation);
+        self->worldScale = self->localScale;
+    }
+    else
+    {
+        self->worldPosition = self->localPosition;
+        self->worldRotation = self->localRotation;
+        self->worldScale = self->localScale;
+    }
 }
 
 void entity_system_update()
@@ -133,9 +146,9 @@ void entity_draw(Entity* self)
 
     gfc_matrix4_from_vectors(
         mat,
-        self->localPosition,
-        self->localRotation,
-        self->localScale);
+        self->worldPosition,
+        self->worldRotation,
+        self->worldScale);
 
     if (self->model)
     {
