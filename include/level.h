@@ -7,6 +7,9 @@
 typedef struct
 {
     Model*      courtModel;
+    GFC_Vector3D        courtPosition;
+    GFC_Vector3D        courtRotation;
+    GFC_Vector3D        courtScale;
     GFC_Box     bounds;         // level bounds so player can't escape
     SJson*      entitiesJson;
     SJson*      _json;

@@ -165,11 +165,11 @@ Mesh *gf3d_mesh_load_obj(const char *filename)
         gf3d_mesh_delete(mesh);
         return NULL;
     }
+    mesh->bounds = prim->objData->bounds;
 
     gfc_list_append(mesh->primitives, prim);
     gfc_line_cpy(mesh->filename, filename);
     return mesh;
-
 }
 
 

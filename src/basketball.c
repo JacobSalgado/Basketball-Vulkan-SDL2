@@ -45,8 +45,8 @@ void basketball_update(Entity* self)
     {
         gfc_vector3d_add(self->localPosition, self->localPosition, self->velocity);
     }
-    slog("basketball worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
-    slog("basketball localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
+    //slog("basketball worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
+    //slog("basketball localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
 }
 
 void basketball_free(Entity* self)

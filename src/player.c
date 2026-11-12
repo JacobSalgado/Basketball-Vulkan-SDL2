@@ -4,6 +4,7 @@
 
 #include "player.h"
 #include "basketball.h"
+#include "collision.h"
 
 void player_think(Entity* self);
 void player_update(Entity* self);
@@ -67,8 +68,8 @@ void player_update(Entity* self)
     self->velocity.x *= friction;
     self->velocity.y *= friction;
 
-    slog("player worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
-    slog("player localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
+    //slog("player worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
+    //slog("player localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
 }
 
 void player_free(Entity* self)

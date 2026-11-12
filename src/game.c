@@ -10,6 +10,7 @@
 #include "gfc_audio.h"
 #include "gfc_string.h"
 #include "gfc_actions.h"
+#include "gfc_primitives.h"
 
 #include "gf2d_sprite.h"
 #include "gf2d_font.h"
@@ -27,6 +28,7 @@
 #include "player.h"
 #include "basketball.h"
 #include "backboard.h"
+#include "collision.h"
 
 extern int __DEBUG;
 
@@ -48,8 +50,10 @@ int main(int argc,char *argv[])
     //local variables
     //Sprite *bg;
 
-    //Model* model;
-    //GFC_Matrix4 mat;
+    Model* court;
+    GFC_Matrix4 courtMat;
+    GFC_Box courtBounds;
+
     GFC_Matrix4 *view;
 
     // entities
@@ -82,11 +86,29 @@ int main(int argc,char *argv[])
     view = gf3d_vgraphics_get_view_matrix(); // <-- used for rendering the camera view
     //model = model_load("models/dino.model");
 
+    court = model_load("models/court.model");
+    gfc_matrix4_identity(courtMat);
+
+    if (court && court->mesh)
+    {
+        courtBounds = court->mesh->bounds;
+        slog("court bounds: pos(%f, %f, %f) size (%f, %f, %f)",
+             courtBounds.x, courtBounds.y, courtBounds.z,
+             courtBounds.w, courtBounds.h, courtBounds.d);
+    }
+    else
+    {
+        slog("court failed to load so using hard-coded bounds");
+        courtBounds = gfc_box(-100, -60, 0, 200, 120, 2);
+    }
+
     player = player_new();
     basketball = basketball_new();
     backboard = backboard_new();
 
     ball_attach(basketball, player);
+
+
 
     //basketball->position = gfc_vector3d(5, 0, 0);
     //basketball->scale = gfc_vector3d(3, 3, 3);
@@ -104,6 +126,7 @@ int main(int argc,char *argv[])
 
         entity_system_think();
         entity_system_update();
+        collision_boundary(player, courtBounds);
 
         //camera updates
         gfc_matrix4_view(
@@ -115,6 +138,7 @@ int main(int argc,char *argv[])
         gf3d_vgraphics_render_start();
         // 3D DRAWS
         //model_queue_render(model, mat, GFC_COLOR_WHITE);
+        model_draw(court, courtMat, GFC_COLOR_WHITE);
         entity_system_draw();
         //entity_draw(player);
         //entity_draw(basketball);
