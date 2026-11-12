@@ -43,4 +43,10 @@ void ball_attach(Entity* ball, Entity* player);
 
 void ball_detach(Entity* ball);
 
+// TODO: Change to GFC_Sphere eventually
+/**
+ * @brief function for basketball collision box
+ */
+GFC_Box basketball_collision_box(Entity* self);
+
 #endif

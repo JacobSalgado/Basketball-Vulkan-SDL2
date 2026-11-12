@@ -106,7 +106,7 @@ int main(int argc,char *argv[])
     basketball = basketball_new();
     backboard = backboard_new();
 
-    ball_attach(basketball, player);
+    //ball_attach(basketball, player);
 
 
 
@@ -127,6 +127,8 @@ int main(int argc,char *argv[])
         entity_system_think();
         entity_system_update();
         collision_boundary(player, courtBounds);
+
+        entity_check_collisions(player);
 
         //camera updates
         gfc_matrix4_view(

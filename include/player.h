@@ -34,4 +34,9 @@ void player_free(Entity* self);
  */
 //void player_input(Entity* self, SDL_Event* event);
 
+/**
+ * @brief function for player collision box
+ */
+GFC_Box player_collision_box(Entity* self);
+
 #endif

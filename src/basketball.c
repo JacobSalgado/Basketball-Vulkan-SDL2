@@ -17,7 +17,7 @@ Entity* basketball_new()
     self->model = model_load("models/basketball.model");
     self->parent = NULL;
 
-    self->localPosition = gfc_vector3d(12,-5,0);
+    self->localPosition = gfc_vector3d(30,5,0);
     self->localRotation = gfc_vector3d(0,0,0);
     self->velocity = gfc_vector3d(0,0,0);
     self->localScale = gfc_vector3d(10,10,10);
@@ -68,4 +68,15 @@ void ball_detach(Entity* ball)
     if (!ball) return;
     ball->localPosition = ball->worldPosition;
     ball->parent = NULL;
+}
+
+GFC_Box basketball_collision_box(Entity* self)
+{
+    //if (!self) return;
+
+    GFC_Box basketballCollisionBox = {
+        self->model->mesh->bounds.x, self->model->mesh->bounds.y, self->model->mesh->bounds.z,
+        self->model->mesh->bounds.w, self->model->mesh->bounds.h, self->model->mesh->bounds.d
+    };
+    return basketballCollisionBox;
 }

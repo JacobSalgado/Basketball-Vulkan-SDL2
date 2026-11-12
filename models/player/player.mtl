@@ -1,0 +1,12 @@
+# Blender 5.2.0 LTS MTL File: 'player.blend'
+# www.blender.org
+
+newmtl PackedMaterial0.005
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 1
+map_Kd /home/flyingnimbus/Downloads/basketball-player-3d-model/Basketball_player_texture.png
+map_d /home/flyingnimbus/Downloads/basketball-player-3d-model/Basketball_player_texture.png

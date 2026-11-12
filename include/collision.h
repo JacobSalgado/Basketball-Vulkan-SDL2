@@ -13,4 +13,8 @@ void collision_boundary(Entity* entity, GFC_Box bounds);
 
 Bool check_entity_overlap(Entity* a, Entity* b);
 
+int check_entity_collision(Entity* player, Entity* other);
+
+int check_box_collision(GFC_Box a, GFC_Box b) ;
+
 #endif

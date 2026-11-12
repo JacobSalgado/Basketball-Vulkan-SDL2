@@ -94,3 +94,14 @@ void player_input(Entity* self, SDL_Event* event)
         }
     }
 }
+
+GFC_Box player_collision_box(Entity* self)
+{
+    //if (!self) return;
+
+    GFC_Box playerCollisionBox = {
+        self->model->mesh->bounds.x, self->model->mesh->bounds.y, self->model->mesh->bounds.z,
+        self->model->mesh->bounds.w, self->model->mesh->bounds.h, self->model->mesh->bounds.d
+    };
+    return playerCollisionBox;
+}

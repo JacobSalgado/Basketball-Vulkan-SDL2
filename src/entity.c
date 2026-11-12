@@ -3,6 +3,7 @@
 #include "gf3d_vgraphics.h"
 
 #include "entity.h"
+#include "collision.h"
 
 typedef struct
 {
@@ -87,6 +88,25 @@ void entity_free(Entity* self)
     if (self->free) self->free (self->data);
 }
 
+void entity_destroy(Entity* self)
+{
+    entity_free(self);
+    entity_manager_remove(self);
+}
+
+void entity_manager_remove(Entity* self)
+{
+    int i;
+    for (i = 0; i < _entityManager.entityMax; i++)
+    {
+        if (&_entityManager.entityList[i] == self)
+        {
+            _entityManager.entityList[i]._refCount = 0;
+            return;
+        }
+    }
+}
+
 void entity_think(Entity* self)
 {
     if (!self) return;
@@ -163,5 +183,22 @@ void entity_system_draw()
     {
         if(!_entityManager.entityList[i]._refCount) continue; // skip inactive entities
         entity_draw(&_entityManager.entityList[i]);
+    }
+}
+
+void entity_check_collisions(Entity* player)
+{
+    int i;
+    Entity* other;
+
+    for (i = 0; i < _entityManager.entityMax; i++)
+    {
+        if (!_entityManager.entityList[i]._refCount) continue; // if the entity is gone, SKIP
+        if (&_entityManager.entityList[i] == player) continue;
+
+        if (check_entity_collision(player, &_entityManager.entityList[i]))
+        {
+            slog("player colliding with entity %i", i);
+        }
     }
 }

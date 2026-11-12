@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include "gfc_types.h"
 #include "gfc_vector.h"
+#include "gfc_primitives.h"
 
 #include "model.h"
 
@@ -77,6 +78,10 @@ void entity_draw(Entity* self);
  */
 void entity_system_think();
 
+void entity_destroy(Entity* self);
+
+void entity_manager_remove(Entity* self);
+
 /**
  * @brief run the update functions for all active entities
  */
@@ -92,6 +97,9 @@ void entity_system_load();
  */
 void entity_system_draw();
 
+GFC_Box collision_entity_box(Entity* self);
+
+void entity_check_collisions(Entity* player);
 
 
 #endif
