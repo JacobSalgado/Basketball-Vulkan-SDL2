@@ -3,6 +3,7 @@
 #include "gf3d_vgraphics.h"
 
 #include "entity.h"
+#include "basketball.h"
 #include "collision.h"
 
 typedef struct
@@ -189,7 +190,6 @@ void entity_system_draw()
 void entity_check_collisions(Entity* player)
 {
     int i;
-    Entity* other;
 
     for (i = 0; i < _entityManager.entityMax; i++)
     {
@@ -198,7 +198,14 @@ void entity_check_collisions(Entity* player)
 
         if (check_entity_collision(player, &_entityManager.entityList[i]))
         {
-            slog("player colliding with entity %i", i);
+            if (_entityManager.entityList[i].type == ENTITY_TYPE_BASKETBALL)
+            {
+                slog("player colliding with basketball entity");
+            }
+            if (_entityManager.entityList[i].type == ENTITY_TYPE_BACKBOARD)
+            {
+                slog("player colliding with backboard entity");
+            }
         }
     }
 }

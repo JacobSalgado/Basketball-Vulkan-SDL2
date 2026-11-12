@@ -13,7 +13,7 @@ Entity* backboard_new()
         return NULL;
     }
 
-    self->type = ENTITY_TYPE_BASKETBALL;
+    self->type = ENTITY_TYPE_BACKBOARD;
     self->model = model_load("models/backboard.model");
 
     self->localPosition = gfc_vector3d(16,0,0);

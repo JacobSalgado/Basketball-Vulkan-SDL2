@@ -14,7 +14,8 @@ typedef enum
 {
     ENTITY_TYPE_PLAYER,
     ENTITY_TYPE_OPPONENT,
-    ENTITY_TYPE_BASKETBALL
+    ENTITY_TYPE_BASKETBALL,
+    ENTITY_TYPE_BACKBOARD
 } EntityType;
 
 typedef struct Entity_S
