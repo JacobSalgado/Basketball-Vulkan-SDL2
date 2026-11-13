@@ -32,12 +32,21 @@ typedef struct Entity_S
     GFC_Vector3D    worldScale;
     GFC_Vector3D    velocity;
     GFC_Color       color;
+    Uint8			onGround; /* <if the entity is on the ground >*/
 
     void (*think)(struct Entity_S* self); /*<function to call to make decisions*/
     void (*update)(struct Entity_S* self); /*function to call to execute those decisions*/
     void (*free) (struct Entity_S* self); /*clean upp any custom allocated data*/
     void *data;								/* for ad hoc addition data for the entity */
 } Entity;
+
+
+/**
+ * @brief applies gravity to the entity
+ * @param self the entity to apply gravity to
+ * Credit to: https://peerdh.com/blogs/programming-insights/implementing-a-simple-physics-engine-in-c-with-sdl
+ */
+void apply_gravity(Entity* self, float deltaTime);
 
 /**
  * @brief initialize entity management system and queues up cleanup on exit

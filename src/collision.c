@@ -60,8 +60,6 @@ int check_entity_collision(Entity* a, Entity* b)
     if (!a || !b) return 0;
     if (check_box_collision(entity_box_collision(a), entity_box_collision(b)))
     {
-        entity_destroy(b);
-        slog("ENTITY B DESTROYED");
         return 1;
     }
 

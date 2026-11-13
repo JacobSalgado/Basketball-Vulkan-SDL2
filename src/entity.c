@@ -129,6 +129,7 @@ void entity_update(Entity* self)
 {
     if (!self) return;
     // boilerplate update stuff goes here
+    apply_gravity(self, 0.016f);
     if (self->update) self->update(self);
 
     if (self->parent)
@@ -201,6 +202,7 @@ void entity_check_collisions(Entity* player)
             if (_entityManager.entityList[i].type == ENTITY_TYPE_BASKETBALL)
             {
                 slog("player colliding with basketball entity");
+                ball_attach(&_entityManager.entityList[i], player);
             }
             if (_entityManager.entityList[i].type == ENTITY_TYPE_BACKBOARD)
             {
@@ -208,4 +210,12 @@ void entity_check_collisions(Entity* player)
             }
         }
     }
+}
+
+void apply_gravity(Entity* self, float deltaTime)
+{
+    float gravity = 9.81f; // gravity value
+
+    if (!self->onGround)
+        self->velocity.z -= gravity * deltaTime; // z-value is downward
 }
