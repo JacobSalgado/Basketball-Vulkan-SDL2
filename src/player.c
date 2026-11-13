@@ -15,7 +15,7 @@ void player_free(Entity* self);
 static float moveSpeed = 1; // acceleration per frame
 static float maxSpeed = 1.0;   // top speed player can reach
 static float friction = 0.85;
-
+static float jumpForce = 10.0;
 
 Entity* player_new()
 {
@@ -32,6 +32,7 @@ Entity* player_new()
     self->model = model_load("models/player.model");
     self->parent = NULL;
 
+    // has no parent entity so world and local positions are the same thing for the player
     self->localPosition = gfc_vector3d(0,0,15);
     self->localRotation = gfc_vector3d(0,90,0);
     self->velocity = gfc_vector3d(0,0,0);
@@ -78,6 +79,7 @@ void player_free(Entity* self)
 
 void player_input(Entity* self)
 {
+    // movement
     if (gfc_input_command_down("forward"))
         self->velocity.y -= moveSpeed;
     if (gfc_input_command_down("backward"))
@@ -86,4 +88,11 @@ void player_input(Entity* self)
         self->velocity.x += moveSpeed;
     if (gfc_input_command_down("rightward"))
         self->velocity.x -= moveSpeed;
+
+    // jump
+    if (self->onGround && gfc_input_command_held("jump"))
+    {
+        self->velocity.z += jumpForce;
+        self->onGround = 0;
+    }
 }

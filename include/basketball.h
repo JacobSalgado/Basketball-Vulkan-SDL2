@@ -1,19 +1,26 @@
 #ifndef __BASKETBALL_H__
 #define __BASKETBALL_H__
 
+#include "entity.h"
+
 typedef enum
 {
+    LOOSE,
+    HELD,
     DRIBBLING,
     AIR,
-    LOOSE
+    SCORED
 } BasketballState;
 
-typedef enum {
-    HIGH,
-    LOW
-} DribblingState;
-
-#include "entity.h"
+typedef struct BallData_S
+{
+    BasketballState     state;
+    Entity*             owner;
+    GFC_Vector3D        velocity;
+    float               radius;
+    float               restitution;
+    float               handHeight;
+} BallData;
 
 /**
  * @brief allocates space for a new basketball entity

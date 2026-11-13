@@ -16,7 +16,7 @@ Entity* backboard_new()
     self->type = ENTITY_TYPE_BACKBOARD;
     self->model = model_load("models/backboard.model");
 
-    self->localPosition = gfc_vector3d(16,0,0);
+    self->localPosition = gfc_vector3d(16,16,0);
     self->localRotation = gfc_vector3d(0,0,0);
     self->velocity = gfc_vector3d(0,0,0);
     self->localScale = gfc_vector3d(10,10,10);

@@ -130,6 +130,7 @@ void entity_update(Entity* self)
     if (!self) return;
     // boilerplate update stuff goes here
     apply_gravity(self, 0.016f);
+
     if (self->update) self->update(self);
 
     if (self->parent)

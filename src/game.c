@@ -127,6 +127,8 @@ int main(int argc,char *argv[])
         entity_system_think();
         entity_system_update();
         collision_boundary(player, courtBounds);
+        collision_boundary(basketball, courtBounds);
+        collision_boundary(backboard, courtBounds);
 
         entity_check_collisions(player);
 

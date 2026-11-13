@@ -3,6 +3,11 @@
 
 #include "entity.h"
 
+typedef enum
+{
+    IDLE, RUN, DRIBBLE, JUMPSHOT, DUNK, STUNNED
+} PlayerState;
+
 /**
  * @brief allocates space for a new player entity
  * @return pointer to player, NULL if error

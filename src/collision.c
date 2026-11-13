@@ -33,6 +33,8 @@ void collision_boundary(Entity* entity, GFC_Box bounds)
     }
 
     // z-axis - jumping up and down and floor
+
+    // this handles the floor
     float floorZ = bounds.z + bounds.d;
     if (entity->model && entity->model->mesh)
         floorZ -= entity->model->mesh->bounds.z * entity->localScale.z; // this part allows the player's feet to visibly sit on the court
@@ -45,15 +47,10 @@ void collision_boundary(Entity* entity, GFC_Box bounds)
         entity->onGround = 1;
     }
 
-    /*if (entity->localPosition.z < bounds.z)
-    {
-        entity->localPosition.z = bounds.z;
-    }
-    if (entity->localPosition.z > bounds.z + bounds.d)
-    {
-        entity->localPosition.z = bounds.z + bounds.d;
-    }*/
-
+    // this is the bounds when the player jumps upward
+    /*float roofZ = bounds.z;
+    if (entity->localPosition.z >= roofZ)
+        entity->velocity.z = -9.8;*/
 }
 
 GFC_Box entity_box_collision(Entity* self)

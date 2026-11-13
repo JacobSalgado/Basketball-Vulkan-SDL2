@@ -37,7 +37,7 @@ typedef struct Entity_S
     void (*think)(struct Entity_S* self); /*<function to call to make decisions*/
     void (*update)(struct Entity_S* self); /*function to call to execute those decisions*/
     void (*free) (struct Entity_S* self); /*clean upp any custom allocated data*/
-    void *data;								/* for ad hoc addition data for the entity */
+    void *data;			/* for ad hoc addition data for the entity. Ex. basketball states our specific player data */
 } Entity;
 
 
