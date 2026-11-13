@@ -23,7 +23,7 @@ void collision_boundary(Entity* entity, GFC_Box bounds)
     }
 
     // y-axis - forward backward movement
-    if (entity->localPosition.y < bounds.y)
+    if (entity->localPosition.y < bounds.y)// x-axis - left right movement
     {
         entity->localPosition.y = bounds.y;
     }

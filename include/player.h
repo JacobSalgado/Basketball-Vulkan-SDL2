@@ -29,10 +29,9 @@ void player_free(Entity* self);
 
 /**
  * @brief handles any player input actions
- * @param self the player
- * @param event the event pointer address
+ * @param self the player you are controlling
  */
-//void player_input(Entity* self, SDL_Event* event);
+void player_input(Entity* self);
 
 /**
  * @brief function for player collision box

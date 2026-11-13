@@ -2,6 +2,8 @@
 
 #include "simple_logger.h"
 
+#include "gfc_input.h"
+
 #include "player.h"
 #include "basketball.h"
 #include "collision.h"
@@ -50,10 +52,7 @@ void player_think(Entity* self)
     if (!self) return;
     unsigned char* keys = SDL_GetKeyboardState(NULL);
 
-    if (keys[SDL_SCANCODE_UP]) self->velocity.y -= moveSpeed;
-    if (keys[SDL_SCANCODE_DOWN]) self->velocity.y += moveSpeed;
-    if (keys[SDL_SCANCODE_LEFT]) self->velocity.x += moveSpeed;
-    if (keys[SDL_SCANCODE_RIGHT]) self->velocity.x -= moveSpeed;
+    player_input(self);
 }
 
 void player_update(Entity* self)
@@ -68,8 +67,8 @@ void player_update(Entity* self)
     self->velocity.x *= friction;
     self->velocity.y *= friction;
 
-    slog("player worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
-    slog("player localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
+    //slog("player worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
+    //slog("player localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
 }
 
 void player_free(Entity* self)
@@ -77,20 +76,14 @@ void player_free(Entity* self)
     if (!self) return;
 }
 
-void player_input(Entity* self, SDL_Event* event)
+void player_input(Entity* self)
 {
-    if (!self || !event) return;
-
-    if (event->type == SDL_KEYDOWN && event->key.repeat == 0)
-    {
-        // movement handling
-        switch (event->key.keysym.sym)
-        {
-            case SDLK_UP:
-                slog("POsition changing %f", self->localPosition.x);
-                self->localPosition.x += moveSpeed; break;
-            case SDLK_DOWN:
-                self->localPosition.x += moveSpeed; break;
-        }
-    }
+    if (gfc_input_command_down("forward"))
+        self->velocity.y -= moveSpeed;
+    if (gfc_input_command_down("backward"))
+        self->velocity.y += moveSpeed;
+    if (gfc_input_command_down("leftward"))
+        self->velocity.x += moveSpeed;
+    if (gfc_input_command_down("rightward"))
+        self->velocity.x -= moveSpeed;
 }
