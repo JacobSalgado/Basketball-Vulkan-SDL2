@@ -17,7 +17,7 @@ Entity* basketball_new()
     self->model = model_load("models/basketball.model");
     self->parent = NULL;
 
-    self->localPosition = gfc_vector3d(50,15,0);
+    self->localPosition = gfc_vector3d(50,15,15);
     self->localRotation = gfc_vector3d(0,0,0);
     self->velocity = gfc_vector3d(0,0,0);
     self->localScale = gfc_vector3d(10,10,10);
