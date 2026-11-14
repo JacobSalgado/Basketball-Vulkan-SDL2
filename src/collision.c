@@ -42,15 +42,12 @@ void collision_boundary(Entity* entity, GFC_Box bounds)
     if (entity->localPosition.z <= floorZ)
     {
         entity->localPosition.z = floorZ;
-        if (entity->localPosition.z < 0)
+        if (entity->velocity.z < 0)
             entity->velocity.z = 0;
         entity->onGround = 1;
     }
-
-    // this is the bounds when the player jumps upward
-    /*float roofZ = bounds.z;
-    if (entity->localPosition.z >= roofZ)
-        entity->velocity.z = -9.8;*/
+    else
+        entity->onGround = 0;
 }
 
 GFC_Box entity_box_collision(Entity* self)

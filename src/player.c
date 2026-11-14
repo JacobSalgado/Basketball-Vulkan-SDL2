@@ -92,7 +92,7 @@ void player_input(Entity* self)
     // jump
     if (self->onGround && gfc_input_command_held("jump"))
     {
-        self->velocity.z += jumpForce;
+        self->velocity.z = JUMP_HEIGHT;
         self->onGround = 0;
     }
 }
