@@ -16,7 +16,6 @@ typedef struct BallData_S
 {
     BasketballState     state;
     Entity*             owner;
-    GFC_Vector3D        velocity;
     float               radius;
     float               restitution;
     float               handHeight;
@@ -38,7 +37,7 @@ void basketball_think(Entity* self);
  * @brief the basketball to update
  * @param self the basketball
  */
-void basketball_update(Entity* self);
+void basketball_update(Entity* self, float deltaTime);
 
 /**
  * @brief the basketball to free

@@ -9,7 +9,7 @@
 #include "collision.h"
 
 void player_think(Entity* self);
-void player_update(Entity* self);
+void player_update(Entity* self, float deltaTime);
 void player_free(Entity* self);
 
 static float moveSpeed = 1; // acceleration per frame
@@ -56,7 +56,7 @@ void player_think(Entity* self)
     player_input(self);
 }
 
-void player_update(Entity* self)
+void player_update(Entity* self, float deltaTime)
 {
     //slog("position %f %f", self->position.x, self->position.y);
     if (!self) return;

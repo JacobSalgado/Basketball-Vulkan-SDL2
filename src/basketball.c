@@ -3,7 +3,7 @@
 #include "basketball.h"
 
 void basketball_think(Entity* self);
-void basketball_update(Entity* self);
+void basketball_update(Entity* self, float deltaTime);
 void basketball_free(Entity* self);
 
 Entity* basketball_new()
@@ -58,7 +58,7 @@ void basketball_think(Entity* self)
     if (!self) return;
 }
 
-void basketball_update(Entity* self)
+void basketball_update(Entity* self, float deltaTime)
 {
     BallData* ballData;
     if (!self || !self->data) return;
@@ -96,7 +96,6 @@ void basketball_free(Entity* self)
 {
     if (!self) return;
     if (!self->data) return;
-    free(self->data);
     self->data = NULL;
 }
 

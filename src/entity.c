@@ -125,13 +125,13 @@ void entity_system_think()
     }
 }
 
-void entity_update(Entity* self)
+void entity_update(Entity* self, float deltaTime)
 {
     if (!self) return;
     // boilerplate update stuff goes here
-    apply_gravity(self, 0.016f);
+    apply_gravity(self, deltaTime);
 
-    if (self->update) self->update(self);
+    if (self->update) self->update(self, deltaTime);
 
     if (self->parent)
     {
@@ -147,13 +147,13 @@ void entity_update(Entity* self)
     }
 }
 
-void entity_system_update()
+void entity_system_update(float deltaTime)
 {
     int i;
     for (i = 0; i < _entityManager.entityMax; i++)
     {
         if (!_entityManager.entityList[i]._refCount) continue; // skip inactive entities
-        entity_update(&_entityManager.entityList[i]);
+        entity_update(&_entityManager.entityList[i], deltaTime);
     }
 }
 
@@ -215,8 +215,6 @@ void entity_check_collisions(Entity* player)
 
 void apply_gravity(Entity* self, float deltaTime)
 {
-    float gravity = 9.81f; // gravity value
-
     if (!self->onGround)
-        self->velocity.z -= gravity * deltaTime; // z-value is downward
+        self->velocity.z -= GRAVITY * deltaTime; // z-value is downward
 }

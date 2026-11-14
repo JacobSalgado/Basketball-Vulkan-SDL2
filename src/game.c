@@ -22,6 +22,9 @@
 #include "gf3d_swapchain.h"
 
 #include "gf3d_mesh.h"
+
+#include "game_physics.h"
+
 #include "model.h"
 
 #include "entity.h"
@@ -33,7 +36,7 @@
 extern int __DEBUG;
 
 static int _done = 0;
-static Uint32 frame_delay = 33;
+static Uint32 frame_delay = 1000 / GAME_FPS;
 static float fps = 0;
 
 void parse_arguments(int argc,char *argv[]);
@@ -125,7 +128,7 @@ int main(int argc,char *argv[])
         gf2d_font_update();
 
         entity_system_think();
-        entity_system_update();
+        entity_system_update(GAME_DELTA_TIME);
         collision_boundary(player, courtBounds);
         collision_boundary(basketball, courtBounds);
         collision_boundary(backboard, courtBounds);

@@ -2,6 +2,10 @@
 
 #include "backboard.h"
 
+void backboard_think(Entity* self);
+void backboard_update(Entity* self, float deltaTime);
+void backboard_free(Entity* self);
+
 Entity* backboard_new()
 {
     Entity* self;
@@ -16,7 +20,7 @@ Entity* backboard_new()
     self->type = ENTITY_TYPE_BACKBOARD;
     self->model = model_load("models/backboard.model");
 
-    self->localPosition = gfc_vector3d(16,16,0);
+    self->localPosition = gfc_vector3d(0,-200,0);
     self->localRotation = gfc_vector3d(0,0,0);
     self->velocity = gfc_vector3d(0,0,0);
     self->localScale = gfc_vector3d(10,10,10);
@@ -37,7 +41,7 @@ void backboard_think(Entity* self)
     if (!self) return;
 }
 
-void backboard_update(Entity* self)
+void backboard_update(Entity* self, float deltaTime)
 {
     if (!self) return;
 }

@@ -19,7 +19,7 @@ void backboard_think(Entity* self);
  * @brief the backboard to update
  * @param self the backboard
  */
-void backboard_update(Entity* self);
+void backboard_update(Entity* self, float deltaTime);
 
 /**
  * @brief the backboard to free

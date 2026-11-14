@@ -6,6 +6,8 @@
 #include "gfc_vector.h"
 #include "gfc_primitives.h"
 
+#include "game_physics.h"
+
 #include "model.h"
 
 typedef struct Entity_S Entity;
@@ -24,10 +26,10 @@ typedef struct Entity_S
     Uint8           _refCount;
     Model*          model;
     Entity*         parent;         // note to self: be careful when freeing an entity cause a parent pointer might dangle
-    GFC_Vector3D    localPosition;
+    GFC_Vector3D    localPosition;  // where the entity is relative to its parent entity
     GFC_Vector3D    localRotation;
     GFC_Vector3D    localScale;
-    GFC_Vector3D    worldPosition;
+    GFC_Vector3D    worldPosition;  // where the entity actually is in the game world
     GFC_Vector3D    worldRotation;
     GFC_Vector3D    worldScale;
     GFC_Vector3D    velocity;
@@ -35,7 +37,7 @@ typedef struct Entity_S
     Uint8			onGround; /* <if the entity is on the ground >*/
 
     void (*think)(struct Entity_S* self); /*<function to call to make decisions*/
-    void (*update)(struct Entity_S* self); /*function to call to execute those decisions*/
+    void (*update)(struct Entity_S* self, float deltaTime); /*function to call to execute those decisions*/
     void (*free) (struct Entity_S* self); /*clean upp any custom allocated data*/
     void *data;			/* for ad hoc addition data for the entity. Ex. basketball states our specific player data */
 } Entity;
@@ -79,9 +81,9 @@ void entity_free(Entity* self);
 void entity_draw(Entity* self);
 
 /**
- * @brief draws all the active entities to the screen
+ * @brief draws in all active entities into the game
  */
-//void entity_system_draw()
+void entity_system_draw();
 
 /**
  * @brief run the think functions for all active entities
@@ -95,17 +97,12 @@ void entity_manager_remove(Entity* self);
 /**
  * @brief run the update functions for all active entities
  */
-void entity_system_update();
+void entity_system_update(float deltaTime);
 
 /**
  * @brief loads in all active entities into the game
  */
 void entity_system_load();
-
-/**
- * @brief draws in all active entities into the game
- */
-void entity_system_draw();
 
 GFC_Box collision_entity_box(Entity* self);
 

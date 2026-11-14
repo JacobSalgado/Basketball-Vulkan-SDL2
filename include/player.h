@@ -24,7 +24,7 @@ void player_think(Entity* self);
  * @brief the player to update
  * @param self the player
  */
-void player_update(Entity* self);
+void player_update(Entity* self, float deltaTime);
 
 /**
  * @brief the player to free
