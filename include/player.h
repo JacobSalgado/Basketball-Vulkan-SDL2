@@ -6,13 +6,15 @@
 typedef enum
 {
     IDLE,
-    RUN,
-    DRIBBLE,
-    JUMPSHOT,       // jumping w/ ball
-    BLOCKING,       // jumping without ball
-    DUNK,
+    MOVING,
+    JUMPING,
     STUNNED
 } PlayerState;
+
+typedef struct PlayerData_S
+{
+    PlayerState     state;          // current action of the player
+} PlayerData;
 
 /**
  * @brief allocates space for a new player entity

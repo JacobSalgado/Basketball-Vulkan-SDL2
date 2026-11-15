@@ -50,3 +50,8 @@ void backboard_free(Entity* self)
 {
     if (!self) return;
 }
+
+GFC_Vector3D backboard_get_rim_position(Entity* self)
+{
+    return self->localPosition;
+}

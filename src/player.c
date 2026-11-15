@@ -27,6 +27,15 @@ Entity* player_new()
         slog("failed to create a new entity");
         return NULL;
     }
+    PlayerData* playerData;
+
+    playerData = gfc_allocate_array(sizeof(PlayerData), 1);
+    if (!playerData)
+    {
+        slog("failed to allocate space for playerData!");
+        return NULL;
+    }
+    playerData->state = IDLE;
 
     self->type = ENTITY_TYPE_PLAYER;
     self->model = model_load("models/player.model");
@@ -79,13 +88,13 @@ void player_free(Entity* self)
 void player_input(Entity* self)
 {
     // movement
-    if (gfc_input_command_down("forward"))
+    if (gfc_input_command_down("forward")) // -y axis
         self->velocity.y -= moveSpeed;
-    if (gfc_input_command_down("backward"))
+    if (gfc_input_command_down("backward")) // +y axis
         self->velocity.y += moveSpeed;
-    if (gfc_input_command_down("leftward"))
+    if (gfc_input_command_down("leftward")) // +x axis
         self->velocity.x += moveSpeed;
-    if (gfc_input_command_down("rightward"))
+    if (gfc_input_command_down("rightward")) // -x axis
         self->velocity.x -= moveSpeed;
 
     // jump
@@ -95,6 +104,7 @@ void player_input(Entity* self)
         self->onGround = 0;
         if (player_has_ball(self))
         {
+            //self->state;
             ball_gather(get_game_ball());
         }
     }

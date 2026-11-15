@@ -13,6 +13,8 @@
 
 // Basketball stuff
 #define SETTLE_SPEED 9.0f
+#define SHOT_TIME_BASE 0.7f // minimum seconds of flight
+#define SHOT_TIME_PER_UNIT 0.005f // extra seconds for each unit of distance
 
 // player stuff
 #define JUMP_HEIGHT 7 * UNITS_PER_METER
@@ -20,6 +22,6 @@
 #define HOLD_DELAY 0.25
 #define BALL_HOLD_OFFSET gfc_vector3d(12,15,12)
 #define BALL_DRIBBLE_OFFSET 12
-#define BALL_SHOOT_OFFSET gfc_vector3d(25,15,25)
+#define BALL_SHOOT_OFFSET gfc_vector3d(0,15,20)
 
 #endif

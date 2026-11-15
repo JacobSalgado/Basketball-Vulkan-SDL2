@@ -70,4 +70,6 @@ Entity* get_game_ball();
 
 void ball_gather(Entity *ball);
 
+void ball_jumpshot(Entity* ball, GFC_Vector3D targetPosition);
+
 #endif

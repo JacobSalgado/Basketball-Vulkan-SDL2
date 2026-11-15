@@ -27,4 +27,11 @@ void backboard_update(Entity* self, float deltaTime);
  */
 void backboard_free(Entity* self);
 
+/**
+ * @brief the backboard position
+ * @param self the backboard/rim
+ * @return vector3 position of the rim
+ */
+GFC_Vector3D backboard_get_rim_position(Entity* self);
+
 #endif

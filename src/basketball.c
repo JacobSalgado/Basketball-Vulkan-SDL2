@@ -144,6 +144,8 @@ void basketball_update(Entity* self, float deltaTime)
     float floorLocal = ball_floor_local_z(self, ballData);
     float handLocal = ball_hand_local_z(self, ballData);
 
+    //GFC_Vector3D targetPosition = backboard_get_rim_position();
+
     switch (ballData->state)
     {
         case LOOSE:
@@ -184,7 +186,7 @@ void basketball_update(Entity* self, float deltaTime)
             }
             else
             {
-                self->localPosition = BALL_SHOOT_OFFSET;
+                ball_jumpshot(self, gfc_vector3d(0,-200,0)); // TODO: this is a hardcoded position. CHANGE LATER
             }
             self->velocity = gfc_vector3d(0,0,0);
             break;
@@ -293,4 +295,33 @@ void ball_gather(Entity *ball)
     ballData->stillTimer = 0;
     ball->velocity = gfc_vector3d(0,0,0);
     ball->localPosition = BALL_SHOOT_OFFSET;
+}
+
+void ball_jumpshot(Entity* ball, GFC_Vector3D targetPosition)
+{
+    BallData* ballData;
+    if (!ball || !ball->data) return;
+    ballData = (BallData*)ball->data;
+    if (!ballData->owner) return;
+
+    GFC_Vector3D pointOfRelease = gfc_vector3d(0,0,0);
+    GFC_Vector3D targetHoopPosition = gfc_vector3d(0,-200,0);
+    GFC_Vector3D distanceFromHoop = gfc_vector3d(0,0,0);
+
+    ball->localPosition = BALL_SHOOT_OFFSET; // shot position when the player jumps
+    gfc_vector3d_add(pointOfRelease, ballData->owner->localPosition, BALL_SHOOT_OFFSET); // point of release is calculated
+    gfc_vector3d_sub(distanceFromHoop, targetHoopPosition, pointOfRelease); // gets the distance from the based on the current point of release and hoop pos
+
+    float horizontalDistance = gfc_vector2d_magnitude(gfc_vector2d(distanceFromHoop.x, distanceFromHoop.y));
+
+    float timeInTheAir = SHOT_TIME_BASE + SHOT_TIME_PER_UNIT * horizontalDistance;
+
+    GFC_Vector3D vel;
+
+    vel.x = distanceFromHoop.x / timeInTheAir;
+    vel.y = distanceFromHoop.y / timeInTheAir;
+    vel.z = (distanceFromHoop.z + 0.5f * GRAVITY * timeInTheAir * timeInTheAir) / timeInTheAir;
+
+
+
 }
