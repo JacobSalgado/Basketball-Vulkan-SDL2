@@ -64,10 +64,9 @@ Entity* basketball_new()
 
     ballData->state = LOOSE;
     ballData->owner = NULL;
-    ballData->restitution = 0.88f;
+    ballData->restitution = 0.85f; // very bouncy. if it equals 1, then that makes it a perfect bounce and no energy is lost
     ballData->handHeight = 1.0f * UNITS_PER_METER;
     ballData->stillTimer = 0;
-    ballData->pushSpeed = 3;
 
     self->data = ballData;
 
@@ -80,6 +79,11 @@ Entity* basketball_new()
     self->velocity = gfc_vector3d(0,0,0);
     self->localScale = gfc_vector3d(10,10,10);
 
+    float fallHeight = ballData->handHeight - ballData->radius;
+    float targetHeight = fallHeight * 1.05f;
+    float e = ballData->restitution;
+    ballData->pushSpeed = sqrtf(2.0f * GRAVITY * (targetHeight / (e * e) - fallHeight));
+
     if (self->model && self->model->mesh)
         ballData->radius = self->model->mesh->bounds.w * 0.5f * self->localScale.x;
 
@@ -90,6 +94,7 @@ Entity* basketball_new()
     self->free = basketball_free;
 
     slog("basketball created!!");
+    //slog("radius %.2f handHeight %.2f pushSpeed %.2f", ballData->radius, ballData->handHeight, ballData->pushSpeed);
 
     return self;
 }
@@ -102,13 +107,13 @@ void basketball_think(Entity* self)
 
     if (ballData->state == HELD && ballData->owner != NULL)
     {
-        if ((gfc_vector2d_magnitude_squared(gfc_vector2d(ballData->owner->velocity.x, ballData->owner->velocity.y))) > MOVE_THRESHOLD)
+        if ((gfc_vector2d_magnitude_squared(gfc_vector2d(ballData->owner->velocity.x, ballData->owner->velocity.y))) > MOVE_THRESHOLD * MOVE_THRESHOLD)
             ball_start_dribble(self);
     }
 
     if (ballData->state == DRIBBLING && ballData->owner != NULL)
     {
-        if ((gfc_vector2d_magnitude_squared(gfc_vector2d(ballData->owner->velocity.x, ballData->owner->velocity.y))) > MOVE_THRESHOLD)
+        if ((gfc_vector2d_magnitude_squared(gfc_vector2d(ballData->owner->velocity.x, ballData->owner->velocity.y))) > MOVE_THRESHOLD * MOVE_THRESHOLD)
         {
             ballData->stillTimer = 0;
             ballData->wantsHold = 0;
@@ -128,16 +133,15 @@ void basketball_update(Entity* self, float deltaTime)
     if (!self || !self->data) return;
     ballData = (BallData*)self->data;
 
-    //slog("basketball worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
-    //slog("basketball localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
+    slog("basketball worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
+    slog("basketball localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
+
+    float floorZ = collision_get_floor_z() + ballData->radius;
+    float floorLocal = ball_floor_local_z(self, ballData);
+    float handLocal = ball_hand_local_z(self, ballData);
 
     switch (ballData->state)
     {
-        float floorZ = collision_get_floor_z() + ballData->radius;
-        float ownerZ = ballData->owner->localPosition.z;
-        float floorLocal = ball_floor_local_z(self, ballData);
-        float handLocal = ball_hand_local_z(self, ballData);
-
         case LOOSE:
         {
             apply_gravity(self, deltaTime);
@@ -177,8 +181,8 @@ void basketball_update(Entity* self, float deltaTime)
             break;
         case DRIBBLING:
         {
-            self->localPosition.x = 12;
-            self->localPosition.y = 5;
+            self->localPosition.x = BALL_HOLD_OFFSET;
+            self->localPosition.y = 0;
             self->velocity.z -= GRAVITY * deltaTime;
             self->localPosition.z += self->velocity.z * deltaTime;
 
@@ -245,9 +249,9 @@ void ball_start_dribble(Entity* ball)
 
     ballData->state = DRIBBLING;
     ball->localPosition.x = 12;
-    ball->localPosition.y = 5;
+    ball->localPosition.y = 0;
     ball->localPosition.z = ball_hand_local_z(ball, ballData);
-    ball->velocity.z = ballData->pushSpeed;
+    ball->velocity.z = -ballData->pushSpeed;
 
     // reset
     ballData->stillTimer = 0;

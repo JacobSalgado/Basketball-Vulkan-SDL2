@@ -10,7 +10,7 @@
 
 #include "model.h"
 
-typedef struct Entity_S Entity;
+typedef struct Entity_S Entity; // for parent entity within Entity struct
 
 typedef enum
 {

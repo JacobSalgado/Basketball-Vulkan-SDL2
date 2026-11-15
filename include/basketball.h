@@ -14,14 +14,14 @@ typedef enum
 
 typedef struct BallData_S
 {
-    BasketballState     state;
-    Entity*             owner;
-    float               radius;
-    float               restitution;
-    float               handHeight;
-    float               pushSpeed;
-    float               stillTimer;
-    Uint8               wantsHold;
+    BasketballState     state;          // current action of the basketball
+    Entity*             owner;          // which player currently has the ball
+    float               radius;         // radius of the ball
+    float               restitution;    // how much energy an object keeps after a collision
+    float               handHeight;     // y-axis offset for where the ball should be placed
+    float               pushSpeed;      // force player pushes down to dribble the ball
+    float               stillTimer;     // checks when the player is stopped or idle
+    Uint8               wantsHold;      // stores when to pick up the ball
 } BallData;
 
 /**
