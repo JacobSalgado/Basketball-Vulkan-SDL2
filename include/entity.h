@@ -3,7 +3,6 @@
 
 #include <SDL.h>
 #include "gfc_types.h"
-#include "gfc_vector.h"
 #include "gfc_primitives.h"
 
 #include "game_physics.h"

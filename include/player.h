@@ -5,7 +5,13 @@
 
 typedef enum
 {
-    IDLE, RUN, DRIBBLE, JUMPSHOT, DUNK, STUNNED
+    IDLE,
+    RUN,
+    DRIBBLE,
+    JUMPSHOT,       // jumping w/ ball
+    BLOCKING,       // jumping without ball
+    DUNK,
+    STUNNED
 } PlayerState;
 
 /**
@@ -42,5 +48,7 @@ void player_input(Entity* self);
  * @brief function for player collision box
  */
 GFC_Box player_collision_box(Entity* self);
+
+static Uint8 player_has_ball(Entity* self);
 
 #endif

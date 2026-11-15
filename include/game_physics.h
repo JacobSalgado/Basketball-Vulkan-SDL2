@@ -1,6 +1,8 @@
 #ifndef __GAME_PHYSICS_H__
 #define __GAME_PHYSICS_H__
 
+#include "gfc_vector.h"
+
 // game-related
 #define GAME_FPS 30
 #define GAME_DELTA_TIME 1.0f / GAME_FPS
@@ -9,15 +11,15 @@
 
 #define FRICTION 0.9
 
-
 // Basketball stuff
 #define SETTLE_SPEED 9.0f
 
 // player stuff
-#define JUMP_HEIGHT 2 * UNITS_PER_METER
+#define JUMP_HEIGHT 7 * UNITS_PER_METER
 #define MOVE_THRESHOLD 5
 #define HOLD_DELAY 0.25
-#define BALL_HOLD_OFFSET 12
+#define BALL_HOLD_OFFSET gfc_vector3d(12,15,12)
 #define BALL_DRIBBLE_OFFSET 12
+#define BALL_SHOOT_OFFSET gfc_vector3d(25,15,25)
 
 #endif

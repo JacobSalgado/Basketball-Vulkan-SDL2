@@ -51,7 +51,6 @@ Entity* player_new()
 void player_think(Entity* self)
 {
     if (!self) return;
-    unsigned char* keys = SDL_GetKeyboardState(NULL);
 
     player_input(self);
 }
@@ -94,5 +93,14 @@ void player_input(Entity* self)
     {
         self->velocity.z = JUMP_HEIGHT;
         self->onGround = 0;
+        if (player_has_ball(self))
+        {
+            ball_gather(get_game_ball());
+        }
     }
+}
+
+static Uint8 player_has_ball(Entity* self)
+{
+    return ball_get_owner(get_game_ball()) == self;
 }

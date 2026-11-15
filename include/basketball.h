@@ -22,6 +22,10 @@ typedef struct BallData_S
     float               pushSpeed;      // force player pushes down to dribble the ball
     float               stillTimer;     // checks when the player is stopped or idle
     Uint8               wantsHold;      // stores when to pick up the ball
+    GFC_Vector3D        launchPosition;
+    GFC_Vector3D        launchVelocity;
+    float               airTime;
+    float               backspin;
 } BallData;
 
 /**
@@ -59,5 +63,11 @@ void ball_detach(Entity* ball);
 GFC_Box basketball_collision_box(Entity* self);
 
 void ball_start_dribble();
+
+Entity* ball_get_owner(Entity* owner);
+
+Entity* get_game_ball();
+
+void ball_gather(Entity *ball);
 
 #endif

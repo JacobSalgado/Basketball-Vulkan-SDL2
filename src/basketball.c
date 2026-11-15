@@ -8,6 +8,8 @@ void basketball_think(Entity* self);
 void basketball_update(Entity* self, float deltaTime);
 void basketball_free(Entity* self);
 
+static Entity* _basketball = NULL; // only one basketball in the game
+
 // help function since I need it ball_start_dribble not just update
 static float ball_floor_local_z(Entity* ball, BallData* ballData)
 {
@@ -93,6 +95,8 @@ Entity* basketball_new()
     self->update = basketball_update;
     self->free = basketball_free;
 
+    _basketball = self;
+
     slog("basketball created!!");
     //slog("radius %.2f handHeight %.2f pushSpeed %.2f", ballData->radius, ballData->handHeight, ballData->pushSpeed);
 
@@ -105,7 +109,7 @@ void basketball_think(Entity* self)
     if (!self || !self->data) return;
     ballData = (BallData*)self->data;
 
-    if (ballData->state == HELD && ballData->owner != NULL)
+    if (ballData->state == HELD && ballData->owner != NULL && ballData->owner->onGround)
     {
         if ((gfc_vector2d_magnitude_squared(gfc_vector2d(ballData->owner->velocity.x, ballData->owner->velocity.y))) > MOVE_THRESHOLD * MOVE_THRESHOLD)
             ball_start_dribble(self);
@@ -174,14 +178,20 @@ void basketball_update(Entity* self, float deltaTime)
         }
         case HELD:
         {
-            self->localPosition = gfc_vector3d(12,12,15);
+            if (ballData->owner->onGround)
+            {
+                self->localPosition = BALL_HOLD_OFFSET;
+            }
+            else
+            {
+                self->localPosition = BALL_SHOOT_OFFSET;
+            }
             self->velocity = gfc_vector3d(0,0,0);
-        }
-            //TODO: snap to player owner's hand. Hold at first but don't dribble until player starts moving
             break;
+        }
         case DRIBBLING:
         {
-            self->localPosition.x = BALL_HOLD_OFFSET;
+            self->localPosition.x = 12;
             self->localPosition.y = 0;
             self->velocity.z -= GRAVITY * deltaTime;
             self->localPosition.z += self->velocity.z * deltaTime;
@@ -211,6 +221,8 @@ void basketball_update(Entity* self, float deltaTime)
 void basketball_free(Entity* self)
 {
     if (!self) return;
+    if (self == _basketball)
+        _basketball = NULL;
     if (!self->data) return;
     self->data = NULL;
 }
@@ -256,4 +268,29 @@ void ball_start_dribble(Entity* ball)
     // reset
     ballData->stillTimer = 0;
     ballData->wantsHold = 0;
+}
+
+Entity* ball_get_owner(Entity* self)
+{
+    if (!self | !self->data) return NULL;
+    return ((BallData*)self->data)->owner;
+}
+
+Entity* get_game_ball()
+{
+    return _basketball;
+}
+
+void ball_gather(Entity *ball)
+{
+    BallData *ballData;
+    if (!ball || !ball->data) return;
+    ballData = (BallData *)ball->data;
+    if (!ballData->owner) return;
+
+    ballData->state = HELD;
+    ballData->wantsHold = 0;
+    ballData->stillTimer = 0;
+    ball->velocity = gfc_vector3d(0,0,0);
+    ball->localPosition = BALL_SHOOT_OFFSET;
 }
