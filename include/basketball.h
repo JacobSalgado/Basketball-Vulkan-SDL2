@@ -19,6 +19,9 @@ typedef struct BallData_S
     float               radius;
     float               restitution;
     float               handHeight;
+    float               pushSpeed;
+    float               stillTimer;
+    Uint8               wantsHold;
 } BallData;
 
 /**
@@ -54,5 +57,7 @@ void ball_detach(Entity* ball);
  * @brief function for basketball collision box
  */
 GFC_Box basketball_collision_box(Entity* self);
+
+void ball_start_dribble();
 
 #endif

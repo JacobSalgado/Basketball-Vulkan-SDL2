@@ -2,9 +2,46 @@
 
 #include "basketball.h"
 
+#include "collision.h"
+
 void basketball_think(Entity* self);
 void basketball_update(Entity* self, float deltaTime);
 void basketball_free(Entity* self);
+
+// help function since I need it ball_start_dribble not just update
+static float ball_floor_local_z(Entity* ball, BallData* ballData)
+{
+    if (!ball || !ballData) return 0;
+
+    float ownerZ;
+    if (ballData->owner)
+    {
+        ownerZ = ballData->owner->localPosition.z;
+    }
+    else
+    {
+        ownerZ = 0.0f;
+    }
+    return collision_get_floor_z() + ballData->radius - ownerZ;
+}
+
+// help function since I need it ball_start_dribble not just update
+static float ball_hand_local_z(Entity* ball, BallData* ballData)
+{
+    if (!ball || !ballData) return 0;
+
+    float ownerZ;
+    if (ballData->owner)
+    {
+        ownerZ = ballData->owner->localPosition.z;
+    }
+    else
+    {
+        ownerZ = 0.0f;
+    }
+    return collision_get_floor_z() + ballData->handHeight - ownerZ;
+}
+
 
 Entity* basketball_new()
 {
@@ -27,9 +64,10 @@ Entity* basketball_new()
 
     ballData->state = LOOSE;
     ballData->owner = NULL;
-    ballData->radius = 0.12f;
-    ballData->restitution = 0.82f;
-    ballData->handHeight = 1.0f;
+    ballData->restitution = 0.88f;
+    ballData->handHeight = 1.0f * UNITS_PER_METER;
+    ballData->stillTimer = 0;
+    ballData->pushSpeed = 3;
 
     self->data = ballData;
 
@@ -37,10 +75,13 @@ Entity* basketball_new()
     self->model = model_load("models/basketball.model");
     self->parent = NULL;
 
-    self->localPosition = gfc_vector3d(50,15,15);
+    self->localPosition = gfc_vector3d(50,15,40);
     self->localRotation = gfc_vector3d(0,0,0);
     self->velocity = gfc_vector3d(0,0,0);
     self->localScale = gfc_vector3d(10,10,10);
+
+    if (self->model && self->model->mesh)
+        ballData->radius = self->model->mesh->bounds.w * 0.5f * self->localScale.x;
 
     self->color = GFC_COLOR_WHITE;
 
@@ -55,7 +96,30 @@ Entity* basketball_new()
 
 void basketball_think(Entity* self)
 {
-    if (!self) return;
+    BallData* ballData;
+    if (!self || !self->data) return;
+    ballData = (BallData*)self->data;
+
+    if (ballData->state == HELD && ballData->owner != NULL)
+    {
+        if ((gfc_vector2d_magnitude_squared(gfc_vector2d(ballData->owner->velocity.x, ballData->owner->velocity.y))) > MOVE_THRESHOLD)
+            ball_start_dribble(self);
+    }
+
+    if (ballData->state == DRIBBLING && ballData->owner != NULL)
+    {
+        if ((gfc_vector2d_magnitude_squared(gfc_vector2d(ballData->owner->velocity.x, ballData->owner->velocity.y))) > MOVE_THRESHOLD)
+        {
+            ballData->stillTimer = 0;
+            ballData->wantsHold = 0;
+        }
+        else
+        {
+            ballData->stillTimer += GAME_DELTA_TIME;
+            if (ballData->stillTimer >= HOLD_DELAY)
+                ballData->wantsHold = 1;
+        }
+    }
 }
 
 void basketball_update(Entity* self, float deltaTime)
@@ -64,23 +128,71 @@ void basketball_update(Entity* self, float deltaTime)
     if (!self || !self->data) return;
     ballData = (BallData*)self->data;
 
-    if (!self->parent)
-    {
-        gfc_vector3d_add(self->localPosition, self->localPosition, self->velocity);
-    }
-
     //slog("basketball worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
     //slog("basketball localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
 
     switch (ballData->state)
     {
+        float floorZ = collision_get_floor_z() + ballData->radius;
+        float ownerZ = ballData->owner->localPosition.z;
+        float floorLocal = ball_floor_local_z(self, ballData);
+        float handLocal = ball_hand_local_z(self, ballData);
+
         case LOOSE:
-            //TODO: ball physics and bouncing and floor
+        {
+            apply_gravity(self, deltaTime);
+
+            self->localPosition.x += self->velocity.x * deltaTime;
+            self->localPosition.y += self->velocity.y * deltaTime;
+            self->localPosition.z += self->velocity.z * deltaTime;
+
+            if (self->localPosition.z <= floorZ) // undos the ball from going straight through the floor
+            {
+                self->localPosition.z = floorZ;
+                if (self->velocity.z < 0)
+                {
+                    self->velocity.z = -self->velocity.z * ballData->restitution;
+                    self->velocity.x *= FRICTION;
+                    self->velocity.y *= FRICTION;
+                    if (fabsf(self->velocity.z) < SETTLE_SPEED) // slows ball down to let it sit and rest
+                    {
+                        self->velocity.z = 0;
+                        self->onGround = 1;
+                    }
+
+                }
+            }
+            else
+            {
+                self->onGround = 0;
+            }
             break;
+        }
         case HELD:
-            //TODO: snap to player owner's hand
+        {
+            self->localPosition = gfc_vector3d(12,12,15);
+            self->velocity = gfc_vector3d(0,0,0);
+        }
+            //TODO: snap to player owner's hand. Hold at first but don't dribble until player starts moving
             break;
         case DRIBBLING:
+        {
+            self->localPosition.x = 12;
+            self->localPosition.y = 5;
+            self->velocity.z -= GRAVITY * deltaTime;
+            self->localPosition.z += self->velocity.z * deltaTime;
+
+            if ((self->localPosition.z <= floorLocal) && self->velocity.z < 0)
+            {
+                self->localPosition.z = floorLocal;
+                self->velocity.z = -self->velocity.z * ballData->restitution;
+            }
+            if ((self->localPosition.z >= handLocal && self->velocity.z > 0))
+            {
+                self->localPosition.z = handLocal;
+                self->velocity.z = -ballData->pushSpeed;
+            }
+        }
             //TODO: follow player holding the ball as well as controlling bounce physics on Z
             break;
         case AIR:
@@ -102,7 +214,7 @@ void basketball_free(Entity* self)
 void ball_attach(Entity* ball, Entity* player)
 {
     BallData* ballData;
-    if (!ball || !player || !ballData ) return;
+    if (!ball || !player || !ball->data ) return;
     ballData = (BallData*)ball->data;
 
     ball->parent = player;
@@ -116,11 +228,28 @@ void ball_attach(Entity* ball, Entity* player)
 void ball_detach(Entity* ball)
 {
     BallData* ballData;
-    if (!ball || !ballData) return;
+    if (!ball || !ball->data) return;
     ballData = (BallData*)ball->data;
 
     ball->localPosition = ball->worldPosition;
     ball->parent = NULL;
     ballData->state = LOOSE;
     ballData->owner = NULL;
+}
+
+void ball_start_dribble(Entity* ball)
+{
+    BallData* ballData;
+    if (!ball || !ball->data) return;
+    ballData = (BallData*)ball->data;
+
+    ballData->state = DRIBBLING;
+    ball->localPosition.x = 12;
+    ball->localPosition.y = 5;
+    ball->localPosition.z = ball_hand_local_z(ball, ballData);
+    ball->velocity.z = ballData->pushSpeed;
+
+    // reset
+    ballData->stillTimer = 0;
+    ballData->wantsHold = 0;
 }

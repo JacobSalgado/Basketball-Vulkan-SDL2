@@ -17,4 +17,8 @@ int check_entity_collision(Entity* player, Entity* other);
 
 int check_box_collision(GFC_Box a, GFC_Box b) ;
 
+void collision_set_court(GFC_Box bounds);
+
+float collision_get_floor_z();
+
 #endif

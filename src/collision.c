@@ -8,6 +8,13 @@
 
 #include "collision.h"
 
+static GFC_Box _courtBounds;
+
+void collision_set_court(GFC_Box bounds)
+{
+    _courtBounds = bounds;
+}
+
 void collision_boundary(Entity* entity, GFC_Box bounds)
 {
     if (!entity) return;
@@ -32,6 +39,7 @@ void collision_boundary(Entity* entity, GFC_Box bounds)
         entity->localPosition.y = bounds.y + bounds.h;
     }
 
+    if (entity->type == ENTITY_TYPE_BASKETBALL) return; // bottom section is interferring with ball bounce since the bottom code reaches ground before bounce can activate
     // z-axis - jumping up and down and floor
 
     // this handles the floor
@@ -41,7 +49,7 @@ void collision_boundary(Entity* entity, GFC_Box bounds)
 
     if (entity->localPosition.z <= floorZ)
     {
-        entity->localPosition.z = floorZ;
+        entity->localPosition.z = floorZ; // undos the player from going straight through the floor
         if (entity->velocity.z < 0)
             entity->velocity.z = 0;
         entity->onGround = 1;
@@ -82,32 +90,9 @@ int check_entity_collision(Entity* a, Entity* b)
     {
         return 1;
     }
+}
 
-    /*GFC_Box playerBox = player_collision_box(player);
-    GFC_Box otherBox = basketball_collision_box(other);
-
-    /*float playerX;
-    float playerY;
-    float playerZ;
-
-    float otherX, otherY, otherZ;
-
-    int result = 0;
-
-    if (player->localPosition.x >= otherBox.x &&
-        player->localPosition.x <= otherBox.x + otherBox.x &&
-        player->localPosition.y >= otherBox.y &&
-        player->localPosition.y <= otherBox.y + otherBox.y &&
-        player->localPosition.z >= otherBox.z &&
-        player->localPosition.z <= otherBox.z
-    )
-    {
-        result = 1;
-    }
-    if (result)
-    {
-        slog ("PLAYER COLLIDING WITH BALL!!");
-        return result;
-    }
-    //slog("otherBox: %f %f %f", otherBox.x, otherBox.y, otherBox.z);*/
+float collision_get_floor_z()
+{
+    return _courtBounds.z + _courtBounds.d;
 }

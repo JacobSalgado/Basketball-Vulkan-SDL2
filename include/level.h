@@ -1,7 +1,6 @@
 #ifndef __LEVEL_H__
 #define __LEVEL_H__
 
-#include "model.h"
 #include "gfc_primitives.h"
 
 typedef struct

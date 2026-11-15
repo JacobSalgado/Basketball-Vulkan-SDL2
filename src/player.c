@@ -12,10 +12,10 @@ void player_think(Entity* self);
 void player_update(Entity* self, float deltaTime);
 void player_free(Entity* self);
 
-static float moveSpeed = 1; // acceleration per frame
-static float maxSpeed = 1.0;   // top speed player can reach
-static float friction = 0.85;
-static float jumpForce = 10.0;
+static float moveSpeed = 5; // acceleration per frame
+static float maxSpeed = 20.0;   // top speed player can reach
+//static float friction = 0.85;
+static float jumpForce = 20.0;
 
 Entity* player_new()
 {
@@ -61,12 +61,12 @@ void player_update(Entity* self, float deltaTime)
     //slog("position %f %f", self->position.x, self->position.y);
     if (!self) return;
 
-    self->localPosition.x += self->velocity.x;
-    self->localPosition.y += self->velocity.y;
-    self->localPosition.z += self->velocity.z;
+    self->localPosition.x += self->velocity.x * deltaTime;
+    self->localPosition.y += self->velocity.y * deltaTime;
+    self->localPosition.z += self->velocity.z * deltaTime;
 
-    self->velocity.x *= friction;
-    self->velocity.y *= friction;
+    self->velocity.x *= FRICTION;
+    self->velocity.y *= FRICTION;
 
     //slog("player worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
     //slog("player localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
