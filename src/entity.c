@@ -162,7 +162,7 @@ void entity_draw(Entity* self)
     GFC_Matrix4 mat;
     //GFC_Matrix4 *view;
 
-    if (!self) return;
+    if (!self || self->hidden ) return;
 
     gfc_matrix4_identity(mat);
     //view = gf3d_vgraphics_get_view_matrix();
@@ -202,12 +202,12 @@ void entity_check_collisions(Entity* player)
         {
             if (_entityManager.entityList[i].type == ENTITY_TYPE_BASKETBALL)
             {
-                slog("player colliding with basketball entity");
+                //slog("player colliding with basketball entity");
                 ball_attach(&_entityManager.entityList[i], player);
             }
             if (_entityManager.entityList[i].type == ENTITY_TYPE_BACKBOARD)
             {
-                slog("player colliding with backboard entity");
+                //slog("player colliding with backboard entity");
             }
         }
     }

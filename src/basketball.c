@@ -4,6 +4,10 @@
 
 #include "collision.h"
 
+#include "backboard.h"
+
+#include "score.h"
+
 void basketball_think(Entity* self);
 void basketball_update(Entity* self, float deltaTime);
 void basketball_free(Entity* self);
@@ -76,7 +80,7 @@ Entity* basketball_new()
     self->model = model_load("models/basketball.model");
     self->parent = NULL;
 
-    self->localPosition = gfc_vector3d(50,15,40);
+    self->localPosition = BALL_RESPAWN_POSITION;
     self->localRotation = gfc_vector3d(0,0,0);
     self->velocity = gfc_vector3d(0,0,0);
     self->localScale = gfc_vector3d(10,10,10);
@@ -88,6 +92,7 @@ Entity* basketball_new()
     float e = ballData->restitution;
     ballData->pushSpeed = sqrtf(2.0f * GRAVITY * (targetHeight / (e * e) - fallHeight));
 
+    self->hidden = 0;
 
     self->color = GFC_COLOR_WHITE;
 
@@ -150,32 +155,7 @@ void basketball_update(Entity* self, float deltaTime)
     {
         case LOOSE:
         {
-            apply_gravity(self, deltaTime);
-
-            self->localPosition.x += self->velocity.x * deltaTime;
-            self->localPosition.y += self->velocity.y * deltaTime;
-            self->localPosition.z += self->velocity.z * deltaTime;
-
-            if (self->localPosition.z <= floorZ) // undos the ball from going straight through the floor
-            {
-                self->localPosition.z = floorZ;
-                if (self->velocity.z < 0)
-                {
-                    self->velocity.z = -self->velocity.z * ballData->restitution;
-                    self->velocity.x *= FRICTION;
-                    self->velocity.y *= FRICTION;
-                    if (fabsf(self->velocity.z) < SETTLE_SPEED) // slows ball down to let it sit and rest
-                    {
-                        self->velocity.z = 0;
-                        self->onGround = 1;
-                    }
-
-                }
-            }
-            else
-            {
-                self->onGround = 0;
-            }
+            ball_loose(self, ballData, deltaTime);
             break;
         }
         case HELD:
@@ -233,6 +213,18 @@ void basketball_update(Entity* self, float deltaTime)
             // backspin visual
             self->localRotation.x += ballData->backspin * deltaTime;
 
+            if (ballData->madeShot && check_entity_collision(self, backboard_get()))
+            {
+                slog("BASKET SCORED!!!");
+                score_add(2);
+                ballData->madeShot = 0;
+                ballData->state = SCORED;
+                ballData->scoredTimer = 0;
+                self->velocity.x *= 0.1f;
+                self->velocity.y *= 0.1f;
+                break;
+            }
+
             // whenever the ball goes past the court and falls to bring it back
             if (self->localPosition.z <= floorZ)
             {
@@ -242,8 +234,17 @@ void basketball_update(Entity* self, float deltaTime)
             break;
         }
         case SCORED:
-            // TODO: net timer and inbounding the ball
-            break;
+        {
+            ballData->scoredTimer += deltaTime;
+            if (!self->hidden)
+            {
+                ball_loose(self, ballData, deltaTime);
+                if (ballData->scoredTimer >= SCORED_HIDE_TIME)
+                    self->hidden = 1;
+            }
+            if (ballData->scoredTimer >= SCORED_RESPAWN_TIME)
+                ball_respawn(self);
+        }
     }
 }
 
@@ -301,7 +302,7 @@ void ball_start_dribble(Entity* ball)
 
 Entity* ball_get_owner(Entity* self)
 {
-    if (!self | !self->data) return NULL;
+    if (!self || !self->data) return NULL;
     return ((BallData*)self->data)->owner;
 }
 
@@ -375,4 +376,59 @@ void ball_jumpshot(Entity* ball, GFC_Vector3D rimPosition)
     ball->velocity = vel;
 
     slog("shot distance: %.1f, time in the air: %.2f, release Quality: %.1f", horizontalDistance, timeInTheAir, releaseQuality);
+
+    // determines if the shot is a make or miss
+    ballData->madeShot = (releaseQuality >= MAKE_THRESHOLD);
+}
+
+void ball_loose(Entity* self, BallData* ballData, float deltaTime)
+{
+    if (!self || !self->data || !ballData) return;
+
+    float floorZ = collision_get_floor_z() + ballData->radius;
+    apply_gravity(self, deltaTime);
+
+    self->localPosition.x += self->velocity.x * deltaTime;
+    self->localPosition.y += self->velocity.y * deltaTime;
+    self->localPosition.z += self->velocity.z * deltaTime;
+
+    if (self->localPosition.z <= floorZ) // undos the ball from going straight through the floor
+    {
+        self->localPosition.z = floorZ;
+        if (self->velocity.z < 0)
+        {
+            self->velocity.z = -self->velocity.z * ballData->restitution;
+            self->velocity.x *= FRICTION;
+            self->velocity.y *= FRICTION;
+            if (fabsf(self->velocity.z) < SETTLE_SPEED) // slows ball down to let it sit and rest
+            {
+                self->velocity.z = 0;
+                self->onGround = 1;
+            }
+
+        }
+    }
+    else
+    {
+        self->onGround = 0;
+    }
+}
+
+void ball_respawn(Entity* ball)
+{
+    BallData* ballData;
+    if (!ball || !ball->data) return;
+    ballData = (BallData*)ball->data;
+
+    ball->parent = NULL;
+    ball->localPosition = BALL_RESPAWN_POSITION;
+    ball->localRotation = gfc_vector3d(0,0,0);
+    ball->velocity = gfc_vector3d(0,0,0);
+    ball->onGround = 0;
+    ball->hidden = 0;
+
+    ballData->state = LOOSE;
+    ballData->owner = NULL;
+    ballData->scoredTimer = 0;
+    ballData->stillTimer = 0;
 }

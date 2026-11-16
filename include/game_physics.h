@@ -16,17 +16,23 @@
 #define SHOT_TIME_BASE 0.7f // minimum seconds of flight
 #define SHOT_TIME_PER_UNIT 0.005f // extra seconds for each unit of distance
 #define MAX_AIM_ERROR 3
+#define MAKE_THRESHOLD 0.7 // release quality needed in order to make a basket
 #define BACKSPIN_RATE 2.5
 #define RIM_RADIUS (0.23 * UNITS_PER_METER)
-#define RIM_OFFSET gfc_vector3d(0, 22, 42.6f)
+#define RIM_OFFSET gfc_vector3d(0, 55, 32.6f)
 
 // player stuff
-#define JUMP_HEIGHT (7 * UNITS_PER_METER)
+#define JUMP_HEIGHT (3 * UNITS_PER_METER)
 #define JUMP_VELOCITY (sqrtf(2.0f * GRAVITY * JUMP_HEIGHT))
 #define MOVE_THRESHOLD 5
 #define HOLD_DELAY 0.25
 #define BALL_HOLD_OFFSET gfc_vector3d(12,15,12)
 #define BALL_DRIBBLE_OFFSET 12
 #define BALL_SHOOT_OFFSET gfc_vector3d(0,15,20)
+
+// handling score stuff
+#define SCORED_HIDE_TIME 0.75f
+#define SCORED_RESPAWN_TIME 1.5f
+#define BALL_RESPAWN_POSITION gfc_vector3d(50,15,40)
 
 #endif

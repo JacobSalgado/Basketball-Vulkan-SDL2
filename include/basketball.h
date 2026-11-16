@@ -27,6 +27,8 @@ typedef struct BallData_S
     GFC_Vector3D        rimPosition;
     float               airTime;
     float               backspin;
+    Uint8               madeShot;
+    float               scoredTimer;
 } BallData;
 
 /**
@@ -72,5 +74,9 @@ Entity* get_game_ball();
 void ball_gather(Entity *ball);
 
 void ball_jumpshot(Entity* ball, GFC_Vector3D targetPosition);
+
+void ball_loose(Entity* self, BallData* ballData, float deltaTime);
+
+void ball_respawn(Entity* self);
 
 #endif

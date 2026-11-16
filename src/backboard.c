@@ -28,6 +28,7 @@ Entity* backboard_new()
     self->localScale = gfc_vector3d(10,10,10);
 
     self->color = GFC_COLOR_WHITE;
+    self->hidden = 0;
 
     self->think = backboard_think;
     self->update = backboard_update;
@@ -61,4 +62,9 @@ GFC_Vector3D backboard_get_rim_position()
     if (!_backboard) return rim;
     gfc_vector3d_add(rim, _backboard->localPosition, RIM_OFFSET);
     return rim;
+}
+
+Entity* backboard_get()
+{
+    return _backboard;
 }

@@ -34,4 +34,6 @@ void backboard_free(Entity* self);
  */
 GFC_Vector3D backboard_get_rim_position();
 
+Entity* backboard_get();
+
 #endif

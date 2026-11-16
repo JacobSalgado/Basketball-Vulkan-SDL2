@@ -50,6 +50,8 @@ Entity* player_new()
 
     self->color = GFC_COLOR_WHITE;
 
+    self->hidden = 0;
+
     self->think = player_think;
     self->update = player_update;
     self->free = player_free;
@@ -62,8 +64,6 @@ void player_think(Entity* self)
 {
     if (!self) return;
 
-    self->velocity.x = 0;
-    self->velocity.y = 0;
     player_input(self);
 }
 

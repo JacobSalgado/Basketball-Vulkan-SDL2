@@ -34,6 +34,7 @@ typedef struct Entity_S
     GFC_Vector3D    velocity;
     GFC_Color       color;
     Uint8			onGround; /* <if the entity is on the ground >*/
+    Uint8           hidden; // show or hide entity
 
     void (*think)(struct Entity_S* self); /*<function to call to make decisions*/
     void (*update)(struct Entity_S* self, float deltaTime); /*function to call to execute those decisions*/
