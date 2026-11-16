@@ -62,6 +62,8 @@ void player_think(Entity* self)
 {
     if (!self) return;
 
+    self->velocity.x = 0;
+    self->velocity.y = 0;
     player_input(self);
 }
 
@@ -101,15 +103,17 @@ void player_input(Entity* self)
     // jump
     if (self->onGround && gfc_input_command_held("jump"))
     {
-        self->velocity.z = JUMP_HEIGHT;
+        self->velocity.z = JUMP_VELOCITY;
         self->onGround = 0;
         if (player_has_ball(self))
         {
             //self->state;
             ball_gather(get_game_ball());
-            if (gfc_input_command_pressed("shoot"))
-                ball_jumpshot(get_game_ball(), backboard_get_rim_position());
         }
+    }
+    if (!self->onGround && player_has_ball(self) && gfc_input_command_pressed("shoot"))
+    {
+        ball_jumpshot(get_game_ball(), backboard_get_rim_position());
     }
 }
 

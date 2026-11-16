@@ -374,5 +374,5 @@ void ball_jumpshot(Entity* ball, GFC_Vector3D rimPosition)
     ball->localPosition = pointOfRelease;
     ball->velocity = vel;
 
-    slog("shot distance: %.1f, time in the air: %.2f, release Quality: ", horizontalDistance, timeInTheAir, releaseQuality);
+    slog("shot distance: %.1f, time in the air: %.2f, release Quality: %.1f", horizontalDistance, timeInTheAir, releaseQuality);
 }
