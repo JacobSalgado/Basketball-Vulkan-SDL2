@@ -24,6 +24,7 @@ typedef struct BallData_S
     Uint8               wantsHold;      // stores when to pick up the ball
     GFC_Vector3D        launchPosition;
     GFC_Vector3D        launchVelocity;
+    GFC_Vector3D        rimPosition;
     float               airTime;
     float               backspin;
 } BallData;

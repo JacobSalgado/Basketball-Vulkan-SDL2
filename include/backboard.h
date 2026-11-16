@@ -32,6 +32,6 @@ void backboard_free(Entity* self);
  * @param self the backboard/rim
  * @return vector3 position of the rim
  */
-GFC_Vector3D backboard_get_rim_position(Entity* self);
+GFC_Vector3D backboard_get_rim_position();
 
 #endif

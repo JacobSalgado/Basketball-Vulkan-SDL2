@@ -6,6 +6,8 @@ void backboard_think(Entity* self);
 void backboard_update(Entity* self, float deltaTime);
 void backboard_free(Entity* self);
 
+static Entity* _backboard = NULL;
+
 Entity* backboard_new()
 {
     Entity* self;
@@ -31,6 +33,8 @@ Entity* backboard_new()
     self->update = backboard_update;
     self->free = backboard_free;
 
+    _backboard = self;
+
     slog("backboard created!!");
 
     return self;
@@ -51,7 +55,10 @@ void backboard_free(Entity* self)
     if (!self) return;
 }
 
-GFC_Vector3D backboard_get_rim_position(Entity* self)
+GFC_Vector3D backboard_get_rim_position()
 {
-    return self->localPosition;
+    GFC_Vector3D rim = gfc_vector3d(0,0,0);
+    if (!_backboard) return rim;
+    gfc_vector3d_add(rim, _backboard->localPosition, RIM_OFFSET);
+    return rim;
 }

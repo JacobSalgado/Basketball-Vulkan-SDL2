@@ -6,6 +6,7 @@
 
 #include "player.h"
 #include "basketball.h"
+#include "backboard.h"
 #include "collision.h"
 
 void player_think(Entity* self);
@@ -106,6 +107,8 @@ void player_input(Entity* self)
         {
             //self->state;
             ball_gather(get_game_ball());
+            if (gfc_input_command_pressed("shoot"))
+                ball_jumpshot(get_game_ball(), backboard_get_rim_position());
         }
     }
 }
