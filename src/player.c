@@ -14,9 +14,6 @@ void player_update(Entity* self, float deltaTime);
 void player_free(Entity* self);
 
 static float moveSpeed = 5; // acceleration per frame
-static float maxSpeed = 20.0;   // top speed player can reach
-//static float friction = 0.85;
-static float jumpForce = 20.0;
 
 Entity* player_new()
 {
