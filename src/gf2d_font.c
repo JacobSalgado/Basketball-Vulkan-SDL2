@@ -195,6 +195,10 @@ FontTypes gf2d_font_type_from_text(const char *buf)
     {
         return FT_H6;
     }
+    else if (strcmp(buf,"score")==0)
+    {
+        return FT_Score;
+    }
     return FT_MAX;
 }
 

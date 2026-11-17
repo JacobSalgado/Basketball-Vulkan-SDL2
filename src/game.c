@@ -157,7 +157,7 @@ int main(int argc,char *argv[])
         //2D draws
                 //gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
                 gfc_line_sprintf(scoreText, "Score: %d", score_get());
-                gf2d_font_draw_line_tag(scoreText,FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));
+                gf2d_font_draw_line_tag(scoreText,FT_Score,GFC_COLOR_WHITE, gfc_vector2d(10,10));
                 /*gf2d_font_draw_line_tag(
                     "NORMAL FONT TEST",
                     FT_Normal,

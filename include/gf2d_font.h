@@ -35,6 +35,7 @@
 
 typedef enum
 {
+    FT_Score,
     FT_Large,
     FT_Normal,
     FT_Small,
