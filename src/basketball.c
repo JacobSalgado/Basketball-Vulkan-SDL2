@@ -92,8 +92,8 @@ Entity* basketball_new()
         ballData->radius = self->model->mesh->bounds.w * 0.5f * self->localScale.x;
     float fallHeight = ballData->handHeight - ballData->radius;
     float targetHeight = fallHeight * 1.05f;
-    float e = ballData->restitution;
-    ballData->pushSpeed = sqrtf(2.0f * GRAVITY * (targetHeight / (e * e) - fallHeight));
+    float e = ballData->restitution; // bounciness
+    ballData->pushSpeed = sqrtf(2.0f * GRAVITY * (targetHeight / (e * e) - fallHeight)); // v = square root of (2g * h)
 
     self->hidden = 0;
 
@@ -182,23 +182,23 @@ void basketball_update(Entity* self, float deltaTime)
         {
             self->localPosition.x = 12;
             self->localPosition.y = 0;
-            self->velocity.z -= GRAVITY * deltaTime;
+            self->velocity.z -= GRAVITY * deltaTime; // downward bounce
             self->localPosition.z += self->velocity.z * deltaTime;
 
             if ((self->localPosition.z <= floorLocal) && self->velocity.z < 0)
             {
                 self->localPosition.z = floorLocal;
-                self->velocity.z = -self->velocity.z * ballData->restitution;
+                self->velocity.z = -self->velocity.z * ballData->restitution; // bounciness to exert upward from floor to hand
             }
             if ((self->localPosition.z >= handLocal && self->velocity.z > 0))
             {
-                self->localPosition.z = handLocal;
+                self->localPosition.z = handLocal; // sets it at hand position
                 if (ballData->wantsHold)
                 {
-                    ballData->state = HELD; self->velocity.z = 0;
+                    ballData->state = HELD; self->velocity.z = 0; // if player has stopped moving then they will hold the ball
                 }
                 else
-                    self->velocity.z = -ballData->pushSpeed;
+                    self->velocity.z = -ballData->pushSpeed; // else they will continue dribbling
             }
             break;
         }
@@ -355,6 +355,7 @@ void ball_jumpshot(Entity* ball, GFC_Vector3D rimPosition)
     GFC_Vector3D distanceFromHoop = gfc_vector3d(0,0,0);
     GFC_Vector3D targetHoopPosition = rimPosition;
 
+    // spread makes it intentionally clear that the player has missed the shot so the ball will shift to the left or right. handled with crandom
     float spread = MAX_AIM_ERROR * (1.0f - releaseQuality);
     float releaseThreshold;
 
@@ -376,13 +377,13 @@ void ball_jumpshot(Entity* ball, GFC_Vector3D rimPosition)
 
     // flight time
     float horizontalDistance = gfc_vector2d_magnitude(gfc_vector2d(distanceFromHoop.x, distanceFromHoop.y));
-    float timeInTheAir = SHOT_TIME_BASE + SHOT_TIME_PER_UNIT * horizontalDistance;
+    float timeInTheAir = SHOT_TIME_BASE + SHOT_TIME_PER_UNIT * horizontalDistance; // more distance, more time it takes for shot to arrive at rim
 
     // launch velocity
     GFC_Vector3D vel;
-    vel.x = distanceFromHoop.x / timeInTheAir;
-    vel.y = distanceFromHoop.y / timeInTheAir;
-    vel.z = (distanceFromHoop.z + 0.5f * GRAVITY * timeInTheAir * timeInTheAir) / timeInTheAir;
+    vel.x = distanceFromHoop.x / timeInTheAir; // speed = distance / time
+    vel.y = distanceFromHoop.y / timeInTheAir; // speed = distance / time
+    vel.z = (distanceFromHoop.z + 0.5f * GRAVITY * timeInTheAir * timeInTheAir) / timeInTheAir; // 1/2 * g * time squared
 
     ballData->launchPosition = pointOfRelease;
     ballData->launchVelocity = vel;

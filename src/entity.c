@@ -137,6 +137,7 @@ void entity_update(Entity* self, float deltaTime)
     {
         gfc_vector3d_add(self->worldPosition, self->parent->worldPosition, self->localPosition);
         gfc_vector3d_add(self->worldRotation, self->parent->worldPosition, self->localRotation);
+        //self->worldRotation = self->localRotation;
         self->worldScale = self->localScale;
     }
     else

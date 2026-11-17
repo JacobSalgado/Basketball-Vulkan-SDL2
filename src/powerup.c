@@ -1,6 +1,5 @@
 #include "simple_logger.h"
 
-#include "entity.h"
 #include "player.h"
 
 #include "collision.h"

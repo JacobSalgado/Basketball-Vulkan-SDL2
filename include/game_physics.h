@@ -18,12 +18,12 @@
 #define MAX_AIM_ERROR 3
 #define MAKE_THRESHOLD 0.7 // release quality needed in order to make a basket
 #define BACKSPIN_RATE 2.5
-#define RIM_RADIUS (0.23 * UNITS_PER_METER)
+//#define RIM_RADIUS (0.23 * UNITS_PER_METER)
 #define RIM_OFFSET gfc_vector3d(0, 55, 32.6f)
 
 // player stuff
 #define JUMP_HEIGHT (3 * UNITS_PER_METER)
-#define JUMP_VELOCITY (sqrtf(2.0f * GRAVITY * JUMP_HEIGHT))
+#define JUMP_VELOCITY (sqrtf(2.0f * GRAVITY * JUMP_HEIGHT)) // jump speed = square root of 2gh
 #define MOVE_THRESHOLD 5
 #define HOLD_DELAY 0.25
 #define BALL_HOLD_OFFSET gfc_vector3d(12,15,12)

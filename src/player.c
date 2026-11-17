@@ -15,7 +15,7 @@ void player_free(Entity* self);
 
 static Entity* _player = NULL;
 
-static float moveSpeed = 5; // acceleration per frame
+static float moveSpeed = 5; //
 
 Entity* player_new()
 {

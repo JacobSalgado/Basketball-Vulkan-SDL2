@@ -34,6 +34,7 @@
 #include "collision.h"
 #include "score.h"
 #include "powerup.h"
+#include "hazard.h"
 
 extern int __DEBUG;
 
@@ -66,6 +67,7 @@ int main(int argc,char *argv[])
     Entity* basketball;
     Entity* backboard;
     Entity* hotHandPowerup;
+    Entity* deadzoneHazard;
 
     // score count
     GFC_TextLine scoreText;
@@ -115,10 +117,9 @@ int main(int argc,char *argv[])
     basketball = basketball_new();
     backboard = backboard_new();
     hotHandPowerup = powerup_new(POWERUP_HOT_HAND, gfc_vector3d(20, -20, 5));
+    deadzoneHazard = hazard_new(HAZARD_DEADSPOT, gfc_vector3d(70, -37, 5));
 
     //ball_attach(basketball, player);
-
-
 
     //basketball->position = gfc_vector3d(5, 0, 0);
     //basketball->scale = gfc_vector3d(3, 3, 3);
