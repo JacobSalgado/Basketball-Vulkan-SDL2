@@ -360,10 +360,12 @@ void ball_jumpshot(Entity* ball, GFC_Vector3D rimPosition)
 
     if (player_has_powerup(ballData->owner, POWERUP_HOT_HAND))
     {
-        releaseThreshold = 0.3; // bigger window to make the shot
+        releaseThreshold = 0.1; // much bigger window to make the shot
     }
     else
         releaseThreshold = MAKE_THRESHOLD;
+
+    slog("releaseThreshold set to: %.2f", releaseThreshold);
 
     targetHoopPosition.x += gfc_crandom() * spread;
     targetHoopPosition.y += gfc_crandom() * spread;

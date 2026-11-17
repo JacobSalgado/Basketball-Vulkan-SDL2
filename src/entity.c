@@ -209,6 +209,10 @@ void entity_check_collisions(Entity* player)
             {
                 //slog("player colliding with backboard entity");
             }
+            if (_entityManager.entityList[i].type == ENTITY_TYPE_POWERUP)
+            {
+                //slog("player colliding with powerup entity!");
+            }
         }
     }
 }

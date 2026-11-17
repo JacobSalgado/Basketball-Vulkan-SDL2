@@ -9,7 +9,7 @@
 
 static const Powerup _powerupManager[POWERUP_MAX] =
 {
-    [POWERUP_HOT_HAND] = {"models/powerup.model", 10.0f, 15.0f},
+    [POWERUP_HOT_HAND] = {"models/powerup.model", 20.0f, 15.0f},
 };
 
 Entity* powerup_new(PowerupEffectType type, GFC_Vector3D position)
@@ -43,7 +43,7 @@ Entity* powerup_new(PowerupEffectType type, GFC_Vector3D position)
     self->localPosition = position;
     self->localRotation = gfc_vector3d(0,0,0);
     self->velocity = gfc_vector3d(0,0,0);
-    self->localScale = gfc_vector3d(10,10,10);
+    self->localScale = gfc_vector3d(5,5,5);
 
     self->hidden = 0;
 
@@ -67,6 +67,7 @@ void powerup_think(Entity* self)
 
     if (!powerupData->active || !check_entity_collision(player_get(), self)) return;
 
+    slog("powerup touched by player");
     player_set_powerup(player, powerupData->type, _powerupManager[powerupData->type].duration);
     powerupData->active = 0;
     powerupData->respawnTimer = _powerupManager[powerupData->type].respawnTime;

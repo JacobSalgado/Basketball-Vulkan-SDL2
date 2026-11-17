@@ -114,7 +114,7 @@ int main(int argc,char *argv[])
     player = player_new();
     basketball = basketball_new();
     backboard = backboard_new();
-    hotHandPowerup = powerup_new(POWERUP_HOT_HAND, gfc_vector3d(20, -20, 0));
+    hotHandPowerup = powerup_new(POWERUP_HOT_HAND, gfc_vector3d(20, -20, 5));
 
     //ball_attach(basketball, player);
 

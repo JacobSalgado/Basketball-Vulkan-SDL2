@@ -90,7 +90,7 @@ void player_update(Entity* self, float deltaTime)
         playerData->powerupEffectTimer -= deltaTime;
         if (playerData->powerupEffectTimer <= 0)
         {
-            slog("powerup %d expired", playerData->activePowerupEffect);
+            slog("powerup expired");
             playerData->activePowerupEffect = POWERUP_NONE;
             playerData->powerupEffectTimer  = 0;
         }
@@ -146,8 +146,9 @@ Entity* player_get()
 
 void player_set_powerup(Entity* self, PowerupEffectType type, float duration)
 {
+    slog("player set powerup called!");
     PlayerData* playerData;
-    if (!self || self->data) return;
+    if (!self || !self->data) return;
     playerData = (PlayerData*) self->data;
 
     playerData->activePowerupEffect = type;
