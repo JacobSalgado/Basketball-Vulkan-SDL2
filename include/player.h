@@ -63,4 +63,6 @@ void player_set_powerup(Entity* self, PowerupEffectType type, float duration);
 
 Uint8 player_has_powerup(Entity* self, PowerupEffectType type);
 
+void player_start_dunk(Entity* self, GFC_Vector3D rimPosition);
+
 #endif
