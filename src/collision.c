@@ -90,6 +90,8 @@ int check_entity_collision(Entity* a, Entity* b)
     {
         return 1;
     }
+    else
+        return 0;
 }
 
 float collision_get_floor_z()

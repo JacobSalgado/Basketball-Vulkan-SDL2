@@ -3,6 +3,8 @@
 
 #include "entity.h"
 
+#include "powerup.h"
+
 typedef enum
 {
     IDLE,
@@ -13,7 +15,9 @@ typedef enum
 
 typedef struct PlayerData_S
 {
-    PlayerState     state;          // current action of the player
+    PlayerState             state;          // current action of the player
+    PowerupEffectType       activePowerupEffect;
+    float                   powerupEffectTimer; // how long the po
 } PlayerData;
 
 /**
@@ -52,5 +56,11 @@ void player_input(Entity* self);
 GFC_Box player_collision_box(Entity* self);
 
 static Uint8 player_has_ball(Entity* self);
+
+Entity* player_get();
+
+void player_set_powerup(Entity* self, PowerupEffectType type, float duration);
+
+Uint8 player_has_powerup(Entity* self, PowerupEffectType type);
 
 #endif

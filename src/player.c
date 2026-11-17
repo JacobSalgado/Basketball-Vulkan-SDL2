@@ -13,6 +13,8 @@ void player_think(Entity* self);
 void player_update(Entity* self, float deltaTime);
 void player_free(Entity* self);
 
+static Entity* _player = NULL;
+
 static float moveSpeed = 5; // acceleration per frame
 
 Entity* player_new()
@@ -34,6 +36,7 @@ Entity* player_new()
         return NULL;
     }
     playerData->state = IDLE;
+    playerData->activePowerupEffect = POWERUP_NONE;
 
     self->type = ENTITY_TYPE_PLAYER;
     self->model = model_load("models/player.model");
@@ -49,9 +52,13 @@ Entity* player_new()
 
     self->hidden = 0;
 
+    self->data = playerData;
+
     self->think = player_think;
     self->update = player_update;
     self->free = player_free;
+
+    _player = self;
 
     slog("player created!!");
     return self;
@@ -66,8 +73,10 @@ void player_think(Entity* self)
 
 void player_update(Entity* self, float deltaTime)
 {
+    PlayerData* playerData;
+    if (!self || !self->data) return;
+    playerData = (PlayerData*) self->data;
     //slog("position %f %f", self->position.x, self->position.y);
-    if (!self) return;
 
     self->localPosition.x += self->velocity.x * deltaTime;
     self->localPosition.y += self->velocity.y * deltaTime;
@@ -75,6 +84,17 @@ void player_update(Entity* self, float deltaTime)
 
     self->velocity.x *= FRICTION;
     self->velocity.y *= FRICTION;
+
+    if (playerData->powerupEffectTimer > 0)
+    {
+        playerData->powerupEffectTimer -= deltaTime;
+        if (playerData->powerupEffectTimer <= 0)
+        {
+            slog("powerup %d expired", playerData->activePowerupEffect);
+            playerData->activePowerupEffect = POWERUP_NONE;
+            playerData->powerupEffectTimer  = 0;
+        }
+    }
 
     //slog("player worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
     //slog("player localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
@@ -117,4 +137,28 @@ void player_input(Entity* self)
 static Uint8 player_has_ball(Entity* self)
 {
     return ball_get_owner(get_game_ball()) == self;
+}
+
+Entity* player_get()
+{
+    return _player;
+}
+
+void player_set_powerup(Entity* self, PowerupEffectType type, float duration)
+{
+    PlayerData* playerData;
+    if (!self || self->data) return;
+    playerData = (PlayerData*) self->data;
+
+    playerData->activePowerupEffect = type;
+    playerData->powerupEffectTimer = duration;
+    slog("powerup %d active for %.1f seconds", type, duration);
+}
+
+Uint8 player_has_powerup(Entity* self, PowerupEffectType type)
+{
+    PlayerData* playerData;
+    if (!self || !self->data) return 0;
+    playerData = (PlayerData*)self->data;
+    return (playerData->activePowerupEffect == type && playerData->powerupEffectTimer > 0);
 }

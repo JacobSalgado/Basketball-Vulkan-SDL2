@@ -1,5 +1,6 @@
 #include "simple_logger.h"
 
+#include "player.h"
 #include "basketball.h"
 
 #include "collision.h"
@@ -7,6 +8,8 @@
 #include "backboard.h"
 
 #include "score.h"
+
+#include "powerup.h"
 
 void basketball_think(Entity* self);
 void basketball_update(Entity* self, float deltaTime);
@@ -190,7 +193,12 @@ void basketball_update(Entity* self, float deltaTime)
             if ((self->localPosition.z >= handLocal && self->velocity.z > 0))
             {
                 self->localPosition.z = handLocal;
-                self->velocity.z = -ballData->pushSpeed;
+                if (ballData->wantsHold)
+                {
+                    ballData->state = HELD; self->velocity.z = 0;
+                }
+                else
+                    self->velocity.z = -ballData->pushSpeed;
             }
             break;
         }
@@ -348,6 +356,15 @@ void ball_jumpshot(Entity* ball, GFC_Vector3D rimPosition)
     GFC_Vector3D targetHoopPosition = rimPosition;
 
     float spread = MAX_AIM_ERROR * (1.0f - releaseQuality);
+    float releaseThreshold;
+
+    if (player_has_powerup(ballData->owner, POWERUP_HOT_HAND))
+    {
+        releaseThreshold = 0.3; // bigger window to make the shot
+    }
+    else
+        releaseThreshold = MAKE_THRESHOLD;
+
     targetHoopPosition.x += gfc_crandom() * spread;
     targetHoopPosition.y += gfc_crandom() * spread;
 
@@ -378,7 +395,7 @@ void ball_jumpshot(Entity* ball, GFC_Vector3D rimPosition)
     slog("shot distance: %.1f, time in the air: %.2f, release Quality: %.1f", horizontalDistance, timeInTheAir, releaseQuality);
 
     // determines if the shot is a make or miss
-    ballData->madeShot = (releaseQuality >= MAKE_THRESHOLD);
+    ballData->madeShot = (releaseQuality >= releaseThreshold);
 }
 
 void ball_loose(Entity* self, BallData* ballData, float deltaTime)
