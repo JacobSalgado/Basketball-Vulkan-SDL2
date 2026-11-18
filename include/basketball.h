@@ -16,6 +16,7 @@ typedef struct BallData_S
 {
     BasketballState     state;          // current action of the basketball
     Entity*             owner;          // which player currently has the ball
+    Entity*             shooter;        // which player just shot the ball
     float               radius;         // radius of the ball
     float               restitution;    // how much energy an object keeps after a collision
     float               handHeight;     // y-axis offset for where the ball should be placed

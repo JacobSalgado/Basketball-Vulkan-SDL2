@@ -73,6 +73,7 @@ Entity* basketball_new()
 
     ballData->state = LOOSE;
     ballData->owner = NULL;
+    ballData->shooter = NULL;
     ballData->restitution = 0.85f; // very bouncy. if it equals 1, then that makes it a perfect bounce and no energy is lost
     ballData->handHeight = 1.0f * UNITS_PER_METER;
     ballData->stillTimer = 0;
@@ -224,7 +225,7 @@ void basketball_update(Entity* self, float deltaTime)
             if (ballData->madeShot && check_entity_collision(self, backboard_get()))
             {
                 slog("BASKET SCORED!!!");
-                score_add(2);
+                score_add(player_give_points(ballData->shooter));
                 ballData->madeShot = 0;
                 ballData->state = SCORED;
                 ballData->scoredTimer = 0;
@@ -376,7 +377,7 @@ void ball_jumpshot(Entity* ball, GFC_Vector3D rimPosition)
     gfc_vector3d_sub(distanceFromHoop, targetHoopPosition, pointOfRelease); // gets the distance from the based on the current point of release and hoop pos
 
     // flight time
-    float horizontalDistance = gfc_vector2d_magnitude(gfc_vector2d(distanceFromHoop.x, distanceFromHoop.y));
+    float horizontalDistance = horizontal_distance(pointOfRelease, targetHoopPosition);
     float timeInTheAir = SHOT_TIME_BASE + SHOT_TIME_PER_UNIT * horizontalDistance; // more distance, more time it takes for shot to arrive at rim
 
     // launch velocity
@@ -389,6 +390,7 @@ void ball_jumpshot(Entity* ball, GFC_Vector3D rimPosition)
     ballData->launchVelocity = vel;
     ballData->airTime = 0.0f;
     ballData->rimPosition = rimPosition;
+    ballData->shooter = ballData->owner;
     ballData->owner = NULL;
 
     ball->parent = NULL;

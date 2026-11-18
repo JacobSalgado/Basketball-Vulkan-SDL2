@@ -7,9 +7,10 @@ typedef enum
 {
     POWERUP_NONE = -1,      // no active powerup
     POWERUP_HOT_HAND,       // releaseQuality threshold is decreased to increase chance of making a shot
-    POWERUP_SPEED,          // increase the speed of the player. maybe jump velocity?
+    POWERUP_SUPERJUMP,          // increase the speed of the player. maybe jump velocity?
     POWERUP_BONUS_POINTS,   // if picked up then 3 or more points
     POWERUP_INVINCIBLITY,   // cannot be shoved to ground and ball cannot be stolen
+    POWERUP_SLOW_MOTION,
     POWERUP_MAX
 } PowerupEffectType;
 

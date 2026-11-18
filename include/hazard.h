@@ -6,7 +6,10 @@
 typedef enum
 {
     HAZARD_DEADSPOT,        // low restituion
-    HAZARD_RUBBER,          // high restitution
+    HAZARD_DIZZY,          // reverses player inputs so they're in a daze
+    HAZARD_MASCOT,
+    HAZARD_SLIPPERY,
+    HAZARD_COLD,             // shooting from a specific spot raises the make threshold making it more difficult to make a shot
     HAZARD_MAX
 } HazardType;
 

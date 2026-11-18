@@ -9,7 +9,6 @@
 static const Hazard _hazardManager[HAZARD_MAX] =
 {
     [HAZARD_DEADSPOT] = {"models/hazard.model", 40.0f, 15.0f},
-    [HAZARD_RUBBER] = {"models/hazard.model", -40.0f, 15.0f},
 };
 
 Entity* hazard_new(HazardType type, GFC_Vector3D position)

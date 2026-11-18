@@ -17,7 +17,8 @@ typedef struct PlayerData_S
 {
     PlayerState             state;          // current action of the player
     PowerupEffectType       activePowerupEffect;
-    float                   powerupEffectTimer; // how long the po
+    float                   powerupEffectTimer; // how long the powerup takes effect
+    Uint8                   bonusPoints;        // bonusPoints for bonus points active powerup
 } PlayerData;
 
 /**
@@ -64,5 +65,7 @@ void player_set_powerup(Entity* self, PowerupEffectType type, float duration);
 Uint8 player_has_powerup(Entity* self, PowerupEffectType type);
 
 void player_start_dunk(Entity* self, GFC_Vector3D rimPosition);
+
+int player_give_points(Entity* player);
 
 #endif

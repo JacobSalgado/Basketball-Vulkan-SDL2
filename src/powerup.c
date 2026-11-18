@@ -8,7 +8,8 @@
 
 static const Powerup _powerupManager[POWERUP_MAX] =
 {
-    [POWERUP_HOT_HAND] = {"models/powerup.model", 20.0f, 15.0f},
+    [POWERUP_HOT_HAND] = {"models/hothand.model", 20.0f, 15.0f},
+    [POWERUP_BONUS_POINTS] = {"models/hothand.model", 50.0f, 50.0f},
 };
 
 Entity* powerup_new(PowerupEffectType type, GFC_Vector3D position)

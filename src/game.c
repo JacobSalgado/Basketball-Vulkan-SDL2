@@ -67,6 +67,7 @@ int main(int argc,char *argv[])
     Entity* basketball;
     Entity* backboard;
     Entity* hotHandPowerup;
+    Entity* bonusPointsPowerup;
     Entity* deadzoneHazard;
 
     // score count
@@ -116,7 +117,10 @@ int main(int argc,char *argv[])
     player = player_new();
     basketball = basketball_new();
     backboard = backboard_new();
+
     hotHandPowerup = powerup_new(POWERUP_HOT_HAND, gfc_vector3d(20, -20, 5));
+    bonusPointsPowerup = powerup_new(POWERUP_BONUS_POINTS, gfc_vector3d(60, 40, 5));
+
     deadzoneHazard = hazard_new(HAZARD_DEADSPOT, gfc_vector3d(70, -37, 5));
 
     //ball_attach(basketball, player);

@@ -35,4 +35,6 @@
 #define SCORED_RESPAWN_TIME 1.5f
 #define BALL_RESPAWN_POSITION gfc_vector3d(50,15,40)
 
+float horizontal_distance(GFC_Vector3D a, GFC_Vector3D b);
+
 #endif

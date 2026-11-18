@@ -154,6 +154,12 @@ void player_set_powerup(Entity* self, PowerupEffectType type, float duration)
     playerData->activePowerupEffect = type;
     playerData->powerupEffectTimer = duration;
     slog("powerup %d active for %.1f seconds", type, duration);
+
+    if (type == POWERUP_BONUS_POINTS)
+    {
+        playerData->bonusPoints = 3 + rand() % 3; // 3, 4, or 5
+        slog("bonus points! next made shot is worth %d", playerData->bonusPoints);
+    }
 }
 
 Uint8 player_has_powerup(Entity* self, PowerupEffectType type)
@@ -162,4 +168,21 @@ Uint8 player_has_powerup(Entity* self, PowerupEffectType type)
     if (!self || !self->data) return 0;
     playerData = (PlayerData*)self->data;
     return (playerData->activePowerupEffect == type && playerData->powerupEffectTimer > 0);
+}
+
+int player_give_points(Entity* player)
+{
+    PlayerData* playerData;
+    int points = 2;
+    if (!player || !player->data) return points;
+    playerData = (PlayerData*)player->data;
+
+    if (player_has_powerup(player, POWERUP_BONUS_POINTS))
+    {
+        points = playerData->bonusPoints;
+        playerData->activePowerupEffect = POWERUP_NONE;
+        playerData->powerupEffectTimer = 0;
+        playerData->bonusPoints = 0;
+    }
+    return points;
 }
