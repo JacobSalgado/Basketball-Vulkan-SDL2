@@ -23,4 +23,8 @@ float collision_get_floor_z();
 
 GFC_Box entity_box_collision(Entity* self);
 
+GFC_Box collision_get_court_bounds();
+
+GFC_Box collision_get_court();
+
 #endif

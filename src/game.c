@@ -35,6 +35,7 @@
 #include "score.h"
 #include "powerup.h"
 #include "hazard.h"
+#include "mascot.h"
 
 extern int __DEBUG;
 
@@ -70,6 +71,7 @@ int main(int argc,char *argv[])
     Entity* hotHandPowerup;
     Entity* bonusPointsPowerup;
 
+    Entity* mascot;
     Entity* deadzoneHazard;
     Entity* dizzyHazard;
 
@@ -124,6 +126,7 @@ int main(int argc,char *argv[])
     hotHandPowerup = powerup_new(POWERUP_HOT_HAND, gfc_vector3d(20, -20, 5));
     bonusPointsPowerup = powerup_new(POWERUP_BONUS_POINTS, gfc_vector3d(60, 40, 5));
 
+    mascot = mascot_new();
     deadzoneHazard = hazard_new(HAZARD_DEADSPOT, gfc_vector3d(70, -37, 5));
     dizzyHazard = hazard_new(HAZARD_DIZZY, gfc_vector3d(-50, -100, 5));
 

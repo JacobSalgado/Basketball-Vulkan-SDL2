@@ -77,7 +77,7 @@ void player_update(Entity* self, float deltaTime)
     PlayerData* playerData;
     if (!self || !self->data) return;
     playerData = (PlayerData*) self->data;
-    //slog("position %f %f", self->position.x, self->position.y);
+    //slog("position x:%f y:%f", self->localPosition.x, self->localPosition.y);
 
     self->localPosition.x += self->velocity.x * deltaTime;
     self->localPosition.y += self->velocity.y * deltaTime;
@@ -107,6 +107,10 @@ void player_update(Entity* self, float deltaTime)
     if (playerData->dizzyTimer > 0)
         playerData->dizzyTimer -= deltaTime;
 
+    // knockdown info
+    if (playerData->knockdownTimer > 0)
+        playerData->knockdownTimer -= deltaTime;
+
     //slog("player worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
     //slog("player localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
 }
@@ -122,6 +126,10 @@ void player_input(Entity* self)
     PlayerData* playerData;
     if (!self || !self->data) return;
     playerData = (PlayerData*) self->data;
+
+    // for when/if player is knocked down by agumon
+    if (playerData->knockdownTimer > 0) return;
+    else self->localRotation.x = 0; // put player back in regular position
 
     // for when/if player is dizzy
     if (playerData->dizzyTimer > 0)
@@ -156,7 +164,7 @@ void player_input(Entity* self)
     }
 }
 
-static Uint8 player_has_ball(Entity* self)
+Uint8 player_has_ball(Entity* self)
 {
     return ball_get_owner(get_game_ball()) == self;
 }
@@ -211,4 +219,15 @@ int player_give_points(Entity* player)
         playerData->bonusPoints = 0;
     }
     return points;
+}
+
+void player_knockdown(Entity* self)
+{
+    PlayerData* playerData;
+    if (!self || !self->data) return;
+    playerData = (PlayerData*)self->data;
+    playerData->knockdownTimer = 2.0f;
+    self->localRotation.x = 45;
+    self->velocity.x = 0;
+    self->velocity.y = 0;
 }

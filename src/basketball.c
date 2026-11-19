@@ -485,4 +485,5 @@ void ball_respawn(Entity* ball)
     ballData->owner = NULL;
     ballData->scoredTimer = 0;
     ballData->stillTimer = 0;
+    ballData->pickupCooldown = 0;
 }

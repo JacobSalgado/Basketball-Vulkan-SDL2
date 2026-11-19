@@ -20,6 +20,7 @@ typedef struct PlayerData_S
     float                   powerupEffectTimer; // how long the powerup takes effect
     Uint8                   bonusPoints;        // bonusPoints for bonus points active powerup
     float                   dizzyTimer;
+    float                   knockdownTimer;
 } PlayerData;
 
 /**
@@ -57,7 +58,7 @@ void player_input(Entity* self);
  */
 GFC_Box player_collision_box(Entity* self);
 
-static Uint8 player_has_ball(Entity* self);
+Uint8 player_has_ball(Entity* self);
 
 Entity* player_get();
 
@@ -68,5 +69,7 @@ Uint8 player_has_powerup(Entity* self, PowerupEffectType type);
 void player_start_dunk(Entity* self, GFC_Vector3D rimPosition);
 
 int player_give_points(Entity* player);
+
+void player_knockdown(Entity* player);
 
 #endif

@@ -15,6 +15,11 @@ void collision_set_court(GFC_Box bounds)
     _courtBounds = bounds;
 }
 
+GFC_Box collision_get_court()
+{
+    return _courtBounds;
+}
+
 void collision_boundary(Entity* entity, GFC_Box bounds)
 {
     if (!entity) return;
