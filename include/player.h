@@ -19,6 +19,7 @@ typedef struct PlayerData_S
     PowerupEffectType       activePowerupEffect;
     float                   powerupEffectTimer; // how long the powerup takes effect
     Uint8                   bonusPoints;        // bonusPoints for bonus points active powerup
+    float                   dizzyTimer;
 } PlayerData;
 
 /**

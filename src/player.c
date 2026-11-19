@@ -8,6 +8,7 @@
 #include "basketball.h"
 #include "backboard.h"
 #include "collision.h"
+#include "hazard.h"
 
 void player_think(Entity* self);
 void player_update(Entity* self, float deltaTime);
@@ -85,6 +86,7 @@ void player_update(Entity* self, float deltaTime)
     self->velocity.x *= FRICTION;
     self->velocity.y *= FRICTION;
 
+    // powerup timers
     if (playerData->powerupEffectTimer > 0)
     {
         playerData->powerupEffectTimer -= deltaTime;
@@ -95,6 +97,15 @@ void player_update(Entity* self, float deltaTime)
             playerData->powerupEffectTimer  = 0;
         }
     }
+
+    if (hazard_at(self->localPosition, HAZARD_DIZZY)) //TODO: need to add future flag when adding invincibility powerup
+    {
+        playerData->dizzyTimer = hazard_get_duration(HAZARD_DIZZY);
+    }
+
+    // dizzy hazard timer timer
+    if (playerData->dizzyTimer > 0)
+        playerData->dizzyTimer -= deltaTime;
 
     //slog("player worldPosition: %f %f %f", self->worldPosition.x, self->worldPosition.y, self->worldPosition.z);
     //slog("player localPosition: %f %f %f", self->localPosition.x, self->localPosition.y, self->localPosition.z);
@@ -107,15 +118,26 @@ void player_free(Entity* self)
 
 void player_input(Entity* self)
 {
+    float direction;
+    PlayerData* playerData;
+    if (!self || !self->data) return;
+    playerData = (PlayerData*) self->data;
+
+    // for when/if player is dizzy
+    if (playerData->dizzyTimer > 0)
+        direction = -1.0f;
+    else
+        direction = 1.0f;
+
     // movement
     if (gfc_input_command_down("forward")) // -y axis
-        self->velocity.y -= moveSpeed;
+        self->velocity.y -= moveSpeed * direction;
     if (gfc_input_command_down("backward")) // +y axis
-        self->velocity.y += moveSpeed;
+        self->velocity.y += moveSpeed * direction;
     if (gfc_input_command_down("leftward")) // +x axis
-        self->velocity.x += moveSpeed;
+        self->velocity.x += moveSpeed * direction;;
     if (gfc_input_command_down("rightward")) // -x axis
-        self->velocity.x -= moveSpeed;
+        self->velocity.x -= moveSpeed * direction;;
 
     // jump
     if (self->onGround && gfc_input_command_held("jump"))
@@ -159,6 +181,10 @@ void player_set_powerup(Entity* self, PowerupEffectType type, float duration)
     {
         playerData->bonusPoints = 3 + rand() % 3; // 3, 4, or 5
         slog("bonus points! next made shot is worth %d", playerData->bonusPoints);
+    }
+    if (hazard_at(self->localPosition, HAZARD_DIZZY)) //TODO: need to add future flag when adding invincibility powerup
+    {
+        playerData->dizzyTimer = hazard_get_duration(HAZARD_DIZZY);
     }
 }
 

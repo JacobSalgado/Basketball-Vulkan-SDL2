@@ -9,7 +9,7 @@
 static const Powerup _powerupManager[POWERUP_MAX] =
 {
     [POWERUP_HOT_HAND] = {"models/hothand.model", 20.0f, 15.0f},
-    [POWERUP_BONUS_POINTS] = {"models/hothand.model", 50.0f, 50.0f},
+    [POWERUP_BONUS_POINTS] = {"models/hothand.model", 30.0f, 15.0f},
 };
 
 Entity* powerup_new(PowerupEffectType type, GFC_Vector3D position)
@@ -85,6 +85,7 @@ void powerup_update(Entity* self, float deltaTime)
         powerupData->respawnTimer -= deltaTime;
         if (powerupData->respawnTimer <= 0)
         {
+            slog("powerup %d respawned", powerupData->type);
             powerupData->active = 1;
             self->hidden = 0;
         }

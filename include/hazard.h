@@ -49,4 +49,8 @@ void hazard_update(Entity* self, float deltaTime);
  */
 void hazard_free(Entity* self);
 
+float hazard_get_duration(HazardType type);
+
+Uint8 hazard_at(GFC_Vector3D position, HazardType type);
+
 #endif
