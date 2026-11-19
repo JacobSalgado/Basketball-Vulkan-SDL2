@@ -30,6 +30,7 @@ typedef struct BallData_S
     float               backspin;
     Uint8               madeShot;
     float               scoredTimer;
+    float               pickupCooldown;
 } BallData;
 
 /**

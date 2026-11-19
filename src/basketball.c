@@ -10,6 +10,7 @@
 #include "score.h"
 
 #include "powerup.h"
+#include "hazard.h"
 
 void basketball_think(Entity* self);
 void basketball_update(Entity* self, float deltaTime);
@@ -155,6 +156,10 @@ void basketball_update(Entity* self, float deltaTime)
 
     //GFC_Vector3D targetPosition = backboard_get_rim_position();
 
+    // when ball detaches cooldown so player can't immediately pick it back up
+    if (ballData->pickupCooldown > 0)
+        ballData->pickupCooldown -= deltaTime;
+
     switch (ballData->state)
     {
         case LOOSE:
@@ -188,15 +193,37 @@ void basketball_update(Entity* self, float deltaTime)
 
             if ((self->localPosition.z <= floorLocal) && self->velocity.z < 0)
             {
+                GFC_Vector3D ballWorld = ballData->owner->localPosition;
+                Uint8 inDeadSpot = hazard_at(ballWorld, HAZARD_DEADSPOT);
+                float e;
+                if (inDeadSpot)
+                    e = 0.3;
+                else
+                    e = ballData->restitution;
+
                 self->localPosition.z = floorLocal;
-                self->velocity.z = -self->velocity.z * ballData->restitution; // bounciness to exert upward from floor to hand
+                self->velocity.z = -self->velocity.z * e; // bounciness to exert upward from floor to hand
+
+                // check for deadspots
+                float riseNeeded = handLocal - floorLocal;
+                if (inDeadSpot && self->velocity.z * self->velocity.z < 2.0f * GRAVITY * riseNeeded) // v squared = 2gh
+                {
+                    GFC_Vector3D carry = ballData->owner->velocity;
+                    slog("dead spot! dribble lost!!");
+                    ball_detach(self);
+                    self->velocity.x = carry.x;
+                    self->velocity.y = carry.y;
+                    break;
+                }
             }
+
+            // if player stops moving then they will hold ball
             if ((self->localPosition.z >= handLocal && self->velocity.z > 0))
             {
                 self->localPosition.z = handLocal; // sets it at hand position
                 if (ballData->wantsHold)
                 {
-                    ballData->state = HELD; self->velocity.z = 0; // if player has stopped moving then they will hold the ball
+                    ballData->state = HELD; self->velocity.z = 0; // no ball movement
                 }
                 else
                     self->velocity.z = -ballData->pushSpeed; // else they will continue dribbling
@@ -272,6 +299,10 @@ void ball_attach(Entity* ball, Entity* player)
     if (!ball || !player || !ball->data ) return;
     ballData = (BallData*)ball->data;
 
+    if (ballData->pickupCooldown > 0) return; // can't immediately pick it up
+    if (ballData->state != LOOSE) return;
+    if (ball->hidden) return;
+
     ball->parent = player;
     ball->localPosition = gfc_vector3d(12, -5, 0);
     ball->velocity = gfc_vector3d(0,0,0);
@@ -290,6 +321,7 @@ void ball_detach(Entity* ball)
     ball->parent = NULL;
     ballData->state = LOOSE;
     ballData->owner = NULL;
+    ballData->pickupCooldown = PICKUP_COOLDOWN;
 }
 
 void ball_start_dribble(Entity* ball)

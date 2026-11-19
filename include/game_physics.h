@@ -20,6 +20,7 @@
 #define BACKSPIN_RATE 2.5
 //#define RIM_RADIUS (0.23 * UNITS_PER_METER)
 #define RIM_OFFSET gfc_vector3d(0, 55, 32.6f)
+#define PICKUP_COOLDOWN 2.0f
 
 // player stuff
 #define JUMP_HEIGHT (3 * UNITS_PER_METER)
