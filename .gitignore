@@ -58,3 +58,29 @@ gf3d
 # extra ignores for lsp client
 *.idx
 
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.VC.db
+*.VC.opendb
+*.ipch
+
+# Build intermediates
+win/basketball/basketball
+win/basketball/obj/
+win/basketball/x64/
+win/basketball/Debug/
+win/basketball/Release/
+
+# Windows build output in repo root
+/basketball.exe
+/basketball.pdb
+/basketball.ilk
+/basketball.exp
+/basketball.lib
+
+# Windows OS junk
+Thumbs.db
+desktop.ini
+

@@ -140,7 +140,7 @@ Model *model_load(const char *filename)
 {
     Mesh* mesh;
     Model* model;
-    Texture* texture;
+    Texture* texture = NULL;
 
     const char* str = NULL;
     const char* str2 = NULL;

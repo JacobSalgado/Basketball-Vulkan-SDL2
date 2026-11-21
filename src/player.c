@@ -45,7 +45,7 @@ Entity* player_new()
 
     // has no parent entity so world and local positions are the same thing for the player
     self->localPosition = gfc_vector3d(0,0,15);
-    self->localRotation = gfc_vector3d(0,90,0);
+    self->localRotation = gfc_vector3d(0,0,0); // the y needs to be set to 90 in ubuntu, 0 on windows
     self->velocity = gfc_vector3d(0,0,0);
     self->localScale = gfc_vector3d(2.5,2.5,2.5);
 
